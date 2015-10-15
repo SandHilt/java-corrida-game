@@ -1,2 +1,3 @@
 ### Bibliografia
-- https://github.com/SilverTiger/lwjgl3-tutorial/wiki/Setup
+- http://compsci.ca/v3/viewtopic.php?t=25991
+- http://www.caelum.com.br/apostila-java-testes-xml-design-patterns/interfaces-graficas-com-swing/
