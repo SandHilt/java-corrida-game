@@ -1,6 +1,6 @@
 
 import java.awt.*;
-
+import java.awt.image.*;
 
 /**
  * refere-se ao jogador usando o carro
@@ -10,6 +10,9 @@ class Player {
 
 	private int pos_x;
 	private int pos_y;
+
+	private final int width = 50;
+	private final int height = 100;
 
 	public Player(int pos_x, int pos_y) {
 		this.pos_x = pos_x;
@@ -41,7 +44,8 @@ class Player {
 	}
 
 	public void render(Graphics g) {
-
+		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		g = img.createGraphics();
 	}
 
 }
