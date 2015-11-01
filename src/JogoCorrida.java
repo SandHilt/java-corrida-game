@@ -51,6 +51,8 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		canvas.createBufferStrategy(2);
 		bs = canvas.getBufferStrategy();
 
+		canvas.addKeyListener(this);
+
 		gameThread = new Thread(this);
 		gameThread.start();
 	}
@@ -62,6 +64,10 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 		while (running) {
 			gameLoop();
+			try {
+				Thread.sleep(10);
+			} catch (Exception e) {
+			}
 		}
 	}
 
@@ -71,12 +77,23 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		//		if (input.isKeyDown(KeyEvent.VK_RIGHT)) {
-		//
-		//		}
-		//		if (input.isKeyDown(KeyEvent.VK_LEFT)) {
-		//
-		//		}
+		switch (e.getKeyCode()) {
+
+			case (KeyEvent.VK_RIGHT):
+				p1.moveRight();
+				break;
+			case (KeyEvent.VK_LEFT):
+				p1.moveLeft();
+				break;
+			case (KeyEvent.VK_UP):
+				p1.moveTop();
+				break;
+			case (KeyEvent.VK_DOWN):
+				p1.moveDown();
+				break;
+
+		}
+
 	}
 
 	@Override

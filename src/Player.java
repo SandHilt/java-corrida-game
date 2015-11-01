@@ -34,28 +34,20 @@ class Player {
 		return height;
 	}
 
-	public int getPos_x() {
-		return pos_x;
-	}
-
-	public int getPos_y() {
-		return pos_y;
-	}
-
 	public void moveTop() {
-		this.pos_y += -1;
+		pos_y--;
 	}
 
 	public void moveRight() {
-		this.pos_x += 1;
+		pos_x++;
 	}
 
 	public void moveDown() {
-		this.pos_y += 1;
+		pos_y++;
 	}
 
 	public void moveLeft() {
-		this.pos_x += -1;
+		pos_x--;
 	}
 
 	public void render(Graphics g) {
