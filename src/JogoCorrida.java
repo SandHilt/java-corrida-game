@@ -3,6 +3,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 //import java.rmi.*;
 //import java.rmi.registry.*;
@@ -25,10 +27,13 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 	public JogoCorrida() {
 		fr = new FrameRate();
+
+		p1 = new Player(10, 10);
+
 	}
 
 	public static void main(String[] args) {
-		JogoCorrida jogo = new JogoCorrida();
+		final JogoCorrida jogo = new JogoCorrida();
 		jogo.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				jogo.onWindowClosing();
@@ -39,7 +44,6 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 				jogo.createAndShowGui();
 			}
 		});
-		jogo.run();
 	}
 
 	public void createAndShowGui() {
@@ -65,11 +69,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		fr.init();
 
 		while (running) {
-			try {
-				gameLoop();
-				Thread.sleep(10);
-			} catch (Exception e) {
-			}
+			gameLoop();
 		}
 	}
 
@@ -90,6 +90,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					g = bs.getDrawGraphics();
 					g.clearRect(0, 0, getWidth(), getHeight());
 					render(g);
+					p1.render(g);
 
 					/* logica do jogo */
 				} finally {

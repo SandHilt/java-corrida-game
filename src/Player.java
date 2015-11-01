@@ -44,8 +44,8 @@ class Player {
 	}
 
 	public void render(Graphics g) {
-		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		g = img.createGraphics();
+		BufferedImage image = LoadImage.getImg("./car.png");
+		g.drawImage(image, pos_x, pos_y , null);
 	}
 
 }
