@@ -11,12 +11,27 @@ class Player {
 	private int pos_x;
 	private int pos_y;
 
-	private final int width = 50;
-	private final int height = 100;
+	private int width;
+	private int height;
+
+	private BufferedImage img;
 
 	public Player(int pos_x, int pos_y) {
 		this.pos_x = pos_x;
 		this.pos_y = pos_y;
+
+		img = LoadImage.getImg("./src/car.png");
+
+		width = img.getWidth();
+		height = img.getHeight();
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
 	}
 
 	public int getPos_x() {
@@ -44,8 +59,7 @@ class Player {
 	}
 
 	public void render(Graphics g) {
-		BufferedImage image = LoadImage.getImg("./car.png");
-		g.drawImage(image, pos_x, pos_y , null);
+		g.drawImage(img, pos_x, pos_y, null);
 	}
 
 }

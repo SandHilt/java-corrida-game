@@ -3,18 +3,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 //import java.rmi.*;
 //import java.rmi.registry.*;
 //import java.rmi.server.*;
-//		if (input.isKeyDown(KeyEvent.VK_RIGHT)) {
-//
-//		}
-//		if (input.isKeyDown(KeyEvent.VK_LEFT)) {
-//
-//		}
 public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 	private FrameRate fr;
@@ -28,7 +20,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 	public JogoCorrida() {
 		fr = new FrameRate();
 
-		p1 = new Player(10, 10);
+		p1 = new Player(0, 0);
 
 	}
 
@@ -48,7 +40,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 	public void createAndShowGui() {
 		Canvas canvas = new Canvas();
-		canvas.setSize(600, 240);
+		canvas.setSize(800, 600);
 		canvas.setBackground(Color.WHITE);
 		canvas.setIgnoreRepaint(true);
 		getContentPane().add(canvas);
@@ -73,12 +65,21 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		}
 	}
 
+	@Override
 	public void keyTyped(KeyEvent e) {
 	}
 
+	@Override
 	public void keyPressed(KeyEvent e) {
+		//		if (input.isKeyDown(KeyEvent.VK_RIGHT)) {
+		//
+		//		}
+		//		if (input.isKeyDown(KeyEvent.VK_LEFT)) {
+		//
+		//		}
 	}
 
+	@Override
 	public void keyReleased(KeyEvent e) {
 	}
 
