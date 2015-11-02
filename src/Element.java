@@ -1,11 +1,20 @@
 
 import java.awt.Graphics;
 
+/**
+ * Classe abstrata para tratar todos os elementos da tela
+ */
 public abstract class Element {
 
+	/**
+	 * Coordenadas de um elemento
+	 */
 	protected int pos_x;
 	protected int pos_y;
 
+	/**
+	 * Tamanhos desses elementos
+	 */
 	private int width;
 	private int height;
 
@@ -26,6 +35,11 @@ public abstract class Element {
 		}
 	}
 
+	/**
+	 * Pega a altura do elemento
+	 *
+	 * @return retorna a altura em inteiro
+	 */
 	public int getHeight() {
 		return height;
 	}

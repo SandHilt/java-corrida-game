@@ -24,8 +24,11 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		fr = new FrameRate();
 
 		road = new Road(0, 0);
-		p1 = new Player(0, 0);
-		p1.setVel(50);
+		p1 = new Player(250, 500);
+		p1.setVel(5);
+
+		p2 = new Player(550, 500);
+		p2.setVel(50);
 
 		en = new ArrayList<>();
 
@@ -78,7 +81,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		while (running) {
 			gameLoop();
 			try {
-				Thread.sleep(10);
+				Thread.sleep(30);
 			} catch (InterruptedException ex) {
 			}
 		}
@@ -104,7 +107,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					render(g);
 
 					/**
-					 * janela WxH carro: posicao tamanho velocidade
+					 * Debug janela WxH carro: posicao tamanho velocidade
 					 */
 					g.setColor(Color.YELLOW);
 					g.drawString("janela:" + getWidth() + "x" + getHeight(), 600, 180);
@@ -115,19 +118,10 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					/**
 					 * Teste de colisao na tela
 					 */
-					if (p1.pos_x < 0) {
-						p1.pos_x = 0;
-					} else if (p1.pos_x + p1.getWidth() >= getWidth()) {
-						p1.pos_x = getWidth() - p1.getWidth();
-					}
-
-					if (p1.pos_y < 0) {
-						p1.pos_y = 0;
-					} else if (p1.pos_y + p1.getHeight() >= getHeight()) {
-						p1.pos_y = getHeight() - p1.getHeight();
-					}
+					p1.colision(getWidth(), getHeight());
 
 					p1.render(g);
+					p2.render(g);
 
 					for (int i = 0; i < en.size(); i++) {
 						en.get(i).render(g);
@@ -158,10 +152,11 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 				p1.moveLeft();
 				break;
 			case (KeyEvent.VK_UP):
-				p1.moveTop();
+				Crossover.setDelta(1);
+//				p1.moveTop();
 				break;
 			case (KeyEvent.VK_DOWN):
-				p1.moveDown();
+//				p1.moveDown();
 				break;
 		}
 

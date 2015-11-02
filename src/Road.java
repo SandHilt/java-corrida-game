@@ -11,7 +11,7 @@ public class Road extends Element {
 
 		for (int i = 0; i < 10; i++) {
 			Crossover c = new Crossover(0, 0);
-			c.incrementCrossoverPos_y(c.getHeight() * i * 2);
+			c.nextCrossover(i);
 			Crossover.crossovers.add(c);
 		}
 
@@ -28,7 +28,7 @@ public class Road extends Element {
 
 		for (Crossover c : Crossover.crossovers) {
 			c.pos_x = pos_x + (this.getWidth() / 2);
-			c.incrementCrossoverPos_y(2, this.getHeight());
+			c.incrementCrossoverPos_y(this.getHeight());
 			c.render(g);
 		}
 	}

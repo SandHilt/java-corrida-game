@@ -2,16 +2,21 @@
 import java.awt.*;
 import java.util.*;
 
+/**
+ * Classe das faixas de transito
+ */
 public class Crossover extends Element {
 
 	private Color color;
 	public static ArrayList<Crossover> crossovers;
+	private static int delta;
 
 	public Crossover(int pos_x, int pos_y) {
 		super(pos_x, pos_y);
 
 		if (crossovers == null) {
 			crossovers = new ArrayList<>();
+			delta = 0;
 		}
 
 		this.color = Color.WHITE;
@@ -28,19 +33,20 @@ public class Crossover extends Element {
 		this.color = color;
 	}
 
-	/**
-	 * Incrementa a pos y
-	 *
-	 * @param delta valor a ser acrescido
-	 */
-	void incrementCrossoverPos_y(int delta) {
-		pos_y += delta;
+	public static void setDelta(double delta) {
+		if (delta > 0) {
+			Crossover.delta += delta;
+		}
 	}
 
-	public void incrementCrossoverPos_y(int delta, int height) {
-		this.incrementCrossoverPos_y(delta);
+	public void nextCrossover(int i) {
+		pos_y += getHeight() * 5 * i;
+	}
 
-		if (pos_y - getHeight() > height) {
+	public void incrementCrossoverPos_y(int limitY) {
+		pos_y += delta;
+
+		if (pos_y - getHeight() > limitY) {
 			pos_y = 0;
 		}
 	}

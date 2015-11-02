@@ -28,6 +28,20 @@ class Player extends Element {
 		this.vel = vel;
 	}
 
+	public void colision(int limitX, int limitY) {
+		if (pos_x < 0) {
+			pos_x = 0;
+		} else if (pos_x + getWidth() >= limitX) {
+			pos_x = limitX - getWidth();
+		}
+
+		if (pos_y < 0) {
+			pos_y = 0;
+		} else if (pos_y + getHeight() >= limitY) {
+			pos_y = limitY - getHeight();
+		}
+	}
+
 	@Override
 	public void render(Graphics g) {
 		g.drawImage(img, pos_x, pos_y, null);
