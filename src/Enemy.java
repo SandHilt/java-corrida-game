@@ -13,6 +13,10 @@ public class Enemy extends Element {
 		color = new Color(r.nextInt(256), r.nextInt(256), r.nextInt(256));
 	}
 
+	public void setColor(Color color) {
+		this.color = color;
+	}
+
 	@Override
 	public void render(Graphics g) {
 		g.setColor(color);

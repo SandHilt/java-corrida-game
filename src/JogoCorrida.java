@@ -52,7 +52,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 	public void createAndShowGui() {
 		Canvas canvas = new Canvas();
 		canvas.setSize(800, 600);
-		canvas.setBackground(Color.WHITE);
+		canvas.setBackground(Color.GREEN);
 		canvas.setIgnoreRepaint(true);
 		getContentPane().add(canvas);
 		setTitle("The Need Velocity Run");
@@ -96,7 +96,8 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					 * Renderizando a rua
 					 */
 					road.setHeight(getHeight());
-					road.setWidth(getWidth());
+					road.setWidth((int) (getWidth() * .8));
+					road.pos_x = ((int) (getWidth() * .1));
 
 					road.render(g);
 
@@ -127,6 +128,11 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					}
 
 					p1.render(g);
+
+					for (int i = 0; i < en.size(); i++) {
+						en.get(i).render(g);
+					}
+
 				} finally {
 					if (g != null) {
 						g.dispose();
