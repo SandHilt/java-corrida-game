@@ -3,6 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
+import java.util.*;
 
 //import java.rmi.*;
 //import java.rmi.registry.*;
@@ -14,13 +15,23 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 	private volatile boolean running;
 	private Thread gameThread;
 
+	private Road road;
 	private Player p1;
 	private Player p2;
+	private ArrayList<Enemy> en;
 
 	public JogoCorrida() {
 		fr = new FrameRate();
 
+		road = new Road(0, 0);
 		p1 = new Player(0, 0);
+		p1.setVel(50);
+
+		en = new ArrayList<>();
+
+		en.add(new Enemy(50, 50));
+		en.add(new Enemy(100, 50));
+		en.add(new Enemy(50, 100));
 
 	}
 
@@ -47,7 +58,9 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		setTitle("The Need Velocity Run");
 		setIgnoreRepaint(true);
 		pack();
+		setLocationRelativeTo(null);
 		setVisible(true);
+		setResizable(false);
 		canvas.createBufferStrategy(2);
 		bs = canvas.getBufferStrategy();
 
@@ -66,9 +79,62 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 			gameLoop();
 			try {
 				Thread.sleep(10);
-			} catch (Exception e) {
+			} catch (InterruptedException ex) {
 			}
 		}
+	}
+
+	private void gameLoop() {
+		do {
+			do {
+				Graphics g = null;
+				try {
+					g = bs.getDrawGraphics();
+					g.clearRect(0, 0, getWidth(), getHeight());
+
+					/**
+					 * Renderizando a rua
+					 */
+					road.setHeight(getHeight());
+					road.setWidth(getWidth());
+
+					road.render(g);
+
+					render(g);
+
+					/**
+					 * janela WxH carro: posicao tamanho velocidade
+					 */
+					g.setColor(Color.YELLOW);
+					g.drawString("janela:" + getWidth() + "x" + getHeight(), 600, 180);
+					g.drawString("carro_pos:" + p1.pos_x + "x" + p1.pos_y, 600, 200);
+					g.drawString("carro_tam:" + p1.getWidth() + "x" + p1.getHeight(), 600, 220);
+					g.drawString("carro_vel:" + p1.getVel(), 600, 240);
+
+					/**
+					 * Teste de colisao na tela
+					 */
+					if (p1.pos_x < 0) {
+						p1.pos_x = 0;
+					} else if (p1.pos_x + p1.getWidth() >= getWidth()) {
+						p1.pos_x = getWidth() - p1.getWidth();
+					}
+
+					if (p1.pos_y < 0) {
+						p1.pos_y = 0;
+					} else if (p1.pos_y + p1.getHeight() >= getHeight()) {
+						p1.pos_y = getHeight() - p1.getHeight();
+					}
+
+					p1.render(g);
+				} finally {
+					if (g != null) {
+						g.dispose();
+					}
+				}
+			} while (bs.contentsRestored());
+			bs.show();
+		} while (bs.contentsLost());
 	}
 
 	@Override
@@ -91,36 +157,12 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 			case (KeyEvent.VK_DOWN):
 				p1.moveDown();
 				break;
-
 		}
 
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-	}
-
-	public void gameLoop() {
-		do {
-			do {
-				Graphics g = null;
-				try {
-					g = bs.getDrawGraphics();
-					g.clearRect(0, 0, getWidth(), getHeight());
-					render(g);
-					p1.render(g);
-
-					/* logica do jogo */
-				} finally {
-					if (g != null) {
-						g.dispose();
-					}
-				}
-			} while (bs.contentsRestored());
-
-			bs.show();
-
-		} while (bs.contentsLost());
 	}
 
 	private void render(Graphics g) {

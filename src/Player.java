@@ -4,54 +4,49 @@ import java.awt.image.*;
 
 /**
  * refere-se ao jogador usando o carro
- *
  */
-class Player {
+class Player extends Element {
 
-	private int pos_x;
-	private int pos_y;
+	private final BufferedImage img;
 
-	private int width;
-	private int height;
-
-	private BufferedImage img;
+	private int vel;
 
 	public Player(int pos_x, int pos_y) {
-		this.pos_x = pos_x;
-		this.pos_y = pos_y;
+		super(pos_x, pos_y);
 
 		img = LoadImage.getImg("./src/car.png");
 
-		width = img.getWidth();
-		height = img.getHeight();
+		this.setWidth(img.getWidth());
+		this.setHeight(img.getHeight());
 	}
 
-	public int getWidth() {
-		return width;
+	public int getVel() {
+		return vel;
 	}
 
-	public int getHeight() {
-		return height;
+	public void setVel(int vel) {
+		this.vel = vel;
 	}
 
-	public void moveTop() {
-		pos_y--;
-	}
-
-	public void moveRight() {
-		pos_x++;
-	}
-
-	public void moveDown() {
-		pos_y++;
-	}
-
-	public void moveLeft() {
-		pos_x--;
-	}
-
+	@Override
 	public void render(Graphics g) {
 		g.drawImage(img, pos_x, pos_y, null);
+	}
+
+	void moveRight() {
+		pos_x += vel;
+	}
+
+	void moveLeft() {
+		pos_x -= vel;
+	}
+
+	void moveTop() {
+		pos_y -= vel;
+	}
+
+	void moveDown() {
+		pos_y += vel;
 	}
 
 }
