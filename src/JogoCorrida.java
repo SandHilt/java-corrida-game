@@ -81,7 +81,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		while (running) {
 			gameLoop();
 			try {
-				Thread.sleep(30);
+				Thread.sleep(15);
 			} catch (InterruptedException ex) {
 			}
 		}
@@ -114,6 +114,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					g.drawString("carro_pos:" + p1.pos_x + "x" + p1.pos_y, 600, 200);
 					g.drawString("carro_tam:" + p1.getWidth() + "x" + p1.getHeight(), 600, 220);
 					g.drawString("carro_vel:" + p1.getVel(), 600, 240);
+					g.drawString("crossover_vel:" + Crossover.getDelta() + "/25" , 600, 260);
 
 					/**
 					 * Teste de colisao na tela
@@ -152,10 +153,11 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 				p1.moveLeft();
 				break;
 			case (KeyEvent.VK_UP):
-				Crossover.setDelta(1);
+				Crossover.setDelta(5);
 //				p1.moveTop();
 				break;
 			case (KeyEvent.VK_DOWN):
+				Crossover.setDelta(-5);
 //				p1.moveDown();
 				break;
 		}

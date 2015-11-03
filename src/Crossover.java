@@ -33,10 +33,15 @@ public class Crossover extends Element {
 		this.color = color;
 	}
 
-	public static void setDelta(double delta) {
-		if (delta > 0) {
+	public static void setDelta(int delta) {
+		int sum = Crossover.delta + delta;
+		if (sum >= 0 && sum <= 25) {
 			Crossover.delta += delta;
 		}
+	}
+
+	public static int getDelta() {
+		return delta;
 	}
 
 	public void nextCrossover(int i) {
