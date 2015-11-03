@@ -27,11 +27,10 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 		road = null;
 
-		p1 = new Player(new Point(250, 500));
+		p1 = new Player(new Point(250, 500), 1);
 		p1.setDelta(5);
 
-		p2 = new Player(new Point(550, 500));
-		p2.setDelta(50);
+		p2 = new Player(new Point(550, 500), 2);
 
 		en = new ArrayList<>();
 
@@ -103,8 +102,8 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					/**
 					 * Renderizando a rua
 					 */
-					if(road == null){
-						road = new Road(new Point(((int)(getWidth() * .1)),0), new Dimension((int)(getWidth() * .8), getHeight()));
+					if (road == null) {
+						road = new Road(new Point(((int) (getWidth() * .1)), 0), new Dimension((int) (getWidth() * .8), getHeight()));
 					} else {
 						road.render(g);
 					}
@@ -153,9 +152,11 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 			case (KeyEvent.VK_RIGHT):
 				p1.moveRight();
+				p1.changeDirection(Player.Direction.RIGHT);
 				break;
 			case (KeyEvent.VK_LEFT):
 				p1.moveLeft();
+				p1.changeDirection(Player.Direction.LEFT);
 				break;
 			case (KeyEvent.VK_UP):
 				Crossover.setDelta(5);
@@ -171,6 +172,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 	@Override
 	public void keyReleased(KeyEvent e) {
+		p1.changeDirection(Player.Direction.FOWARD);
 	}
 
 	private void render(Graphics g) {

@@ -8,20 +8,28 @@ import java.awt.image.*;
 class Player extends Element {
 
 	private BufferedImage img;
+	private static Player player;
 
 	/**
 	 * Numero de pixels que a imagem eh movida
 	 */
 	private int delta;
+	private Direction direction;
+	private int imageIndex;
 
-	public Player(Point point, Dimension dimension) {
-		super(point, dimension);
-	}
+	public enum Direction {
 
-	public Player(Point point) {
+		FOWARD,
+		LEFT,
+		RIGHT
+	};
+
+	public Player(Point point, int imageIndex) {
 		super(point);
-		img = LoadImage.getImg("./src/car_1.png");
+		this.imageIndex = imageIndex;
+		loadImg("");
 		setDimension(new Dimension(img.getWidth(), img.getHeight()));
+		direction = Direction.FOWARD;
 	}
 
 	public int getDelta() {
@@ -32,6 +40,35 @@ class Player extends Element {
 		this.delta = delta;
 	}
 
+	/**
+	 * Carega uma image que pode sido rodada
+	 *
+	 * @param imageIndex sufixo da imagem
+	 * @param rotation sufixo da rotacao
+	 */
+	public void loadImg(String rotation) {
+		if (!"".equals(rotation)) {
+			rotation = "_" + rotation;
+		}
+		img = LoadImage.getImg("./src/car_" + imageIndex + rotation + ".png");
+	}
+
+	public void changeDirection(Direction direction) {
+		this.direction = direction;
+		if (!direction.equals(Direction.FOWARD)) {
+			loadImg(direction.name().toLowerCase());
+		} else {
+			loadImg("");
+		}
+
+	}
+
+	/**
+	 * Testa as colisoes da pista e de outros inimigos
+	 *
+	 * @param limitX
+	 * @param limitY
+	 */
 	public void colision(int limitX, int limitY) {
 
 		if (getPoint().x < 0) {
