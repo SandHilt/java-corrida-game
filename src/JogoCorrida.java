@@ -3,7 +3,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
+import java.io.File;
 import java.util.*;
+import javafx.scene.media.*;
 
 //import java.rmi.*;
 //import java.rmi.registry.*;
@@ -19,6 +21,8 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 	private Player p1;
 	private Player p2;
 	private ArrayList<Enemy> en;
+
+	private MediaPlayer media;
 
 	public JogoCorrida() {
 		fr = new FrameRate();
@@ -36,6 +40,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		en.add(new Enemy(100, 50));
 		en.add(new Enemy(50, 100));
 
+		media = new MediaPlayer(new Media("./src/soundtrack.mp3"));
 	}
 
 	public static void main(String[] args) {
@@ -66,6 +71,8 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		setResizable(false);
 		canvas.createBufferStrategy(2);
 		bs = canvas.getBufferStrategy();
+
+		media.play();
 
 		canvas.addKeyListener(this);
 
@@ -114,7 +121,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					g.drawString("carro_pos:" + p1.pos_x + "x" + p1.pos_y, 600, 200);
 					g.drawString("carro_tam:" + p1.getWidth() + "x" + p1.getHeight(), 600, 220);
 					g.drawString("carro_vel:" + p1.getVel(), 600, 240);
-					g.drawString("crossover_vel:" + Crossover.getDelta() + "/25" , 600, 260);
+					g.drawString("crossover_vel:" + Crossover.getDelta() + "/" + Crossover.MAX_VEL, 600, 260);
 
 					/**
 					 * Teste de colisao na tela
@@ -178,6 +185,10 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		try {
 			running = false;
 			gameThread.join();
+
+			media.stop();
+			media.dispose();
+
 		} catch (InterruptedException e) {
 		}
 		System.exit(0);

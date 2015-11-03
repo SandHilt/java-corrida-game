@@ -10,6 +10,7 @@ public class Crossover extends Element {
 	private Color color;
 	public static ArrayList<Crossover> crossovers;
 	private static int delta;
+	public static final int MAX_VEL = 15;
 
 	public Crossover(int pos_x, int pos_y) {
 		super(pos_x, pos_y);
@@ -35,7 +36,7 @@ public class Crossover extends Element {
 
 	public static void setDelta(int delta) {
 		int sum = Crossover.delta + delta;
-		if (sum >= 0 && sum <= 25) {
+		if (sum >= 0 && sum <= MAX_VEL) {
 			Crossover.delta += delta;
 		}
 	}
