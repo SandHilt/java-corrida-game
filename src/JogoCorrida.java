@@ -3,9 +3,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
-import java.io.File;
 import java.util.*;
-import javafx.scene.media.*;
+//import javafx.scene.media.*;
 
 //import java.rmi.*;
 //import java.rmi.registry.*;
@@ -22,25 +21,25 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 	private Player p2;
 	private ArrayList<Enemy> en;
 
-	private MediaPlayer media;
-
+//	private MediaPlayer media;
 	public JogoCorrida() {
 		fr = new FrameRate();
 
-		road = new Road(0, 0);
-		p1 = new Player(250, 500);
-		p1.setVel(5);
+		road = null;
 
-		p2 = new Player(550, 500);
-		p2.setVel(50);
+		p1 = new Player(new Point(250, 500));
+		p1.setDelta(5);
+
+		p2 = new Player(new Point(550, 500));
+		p2.setDelta(50);
 
 		en = new ArrayList<>();
 
-		en.add(new Enemy(50, 50));
-		en.add(new Enemy(100, 50));
-		en.add(new Enemy(50, 100));
+		en.add(new Enemy(new Point(50, 50)));
+		en.add(new Enemy(new Point(100, 50)));
+		en.add(new Enemy(new Point(50, 100)));
 
-		media = new MediaPlayer(new Media("./src/soundtrack.mp3"));
+//		media = new MediaPlayer(new Media("./src/soundtrack.mp3"));
 	}
 
 	public static void main(String[] args) {
@@ -72,8 +71,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		canvas.createBufferStrategy(2);
 		bs = canvas.getBufferStrategy();
 
-		media.play();
-
+//		media.play();
 		canvas.addKeyListener(this);
 
 		gameThread = new Thread(this);
@@ -105,11 +103,11 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					/**
 					 * Renderizando a rua
 					 */
-					road.setHeight(getHeight());
-					road.setWidth((int) (getWidth() * .8));
-					road.pos_x = ((int) (getWidth() * .1));
-
-					road.render(g);
+					if(road == null){
+						road = new Road(new Point(((int)(getWidth() * .1)),0), new Dimension((int)(getWidth() * .8), getHeight()));
+					} else {
+						road.render(g);
+					}
 
 					render(g);
 
@@ -117,11 +115,11 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					 * Debug janela WxH carro: posicao tamanho velocidade
 					 */
 					g.setColor(Color.YELLOW);
-					g.drawString("janela:" + getWidth() + "x" + getHeight(), 600, 180);
-					g.drawString("carro_pos:" + p1.pos_x + "x" + p1.pos_y, 600, 200);
-					g.drawString("carro_tam:" + p1.getWidth() + "x" + p1.getHeight(), 600, 220);
-					g.drawString("carro_vel:" + p1.getVel(), 600, 240);
-					g.drawString("crossover_vel:" + Crossover.getDelta() + "/" + Crossover.MAX_VEL, 600, 260);
+					g.drawString("janela:" + getWidth() + "x" + getHeight(), 500, 180);
+					g.drawString("carro_pos:" + p1.getPoint().toString(), 500, 200);
+					g.drawString("carro_tam:" + p1.getDimension().toString(), 500, 220);
+					g.drawString("carro_vel:" + p1.getDelta(), 500, 240);
+					g.drawString("crossover_vel:" + Crossover.getDelta() + "/" + Crossover.MAX_VEL, 500, 260);
 
 					/**
 					 * Teste de colisao na tela
@@ -186,9 +184,8 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 			running = false;
 			gameThread.join();
 
-			media.stop();
-			media.dispose();
-
+//			media.stop();
+//			media.dispose();
 		} catch (InterruptedException e) {
 		}
 		System.exit(0);

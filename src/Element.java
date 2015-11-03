@@ -1,55 +1,58 @@
 
-import java.awt.Graphics;
+import java.awt.*;
 
 /**
  * Classe abstrata para tratar todos os elementos da tela
  */
 public abstract class Element {
 
-	/**
-	 * Coordenadas de um elemento
-	 */
-	protected int pos_x;
-	protected int pos_y;
+	private Dimension dimension;
+	private Point point;
 
-	/**
-	 * Tamanhos desses elementos
-	 */
-	private int width;
-	private int height;
-
-	public Element(int pos_x, int pos_y) {
-		this.pos_x = pos_x;
-		this.pos_y = pos_y;
-	}
-
-	public int getWidth() {
-		return width;
-	}
-
-	public void setWidth(int width) {
-		if (width > 0) {
-			this.width = width;
-		} else {
-			System.out.println("Valor invalido para largura");
+	public Element(Point point) {
+		try {
+			if (point.x >= 0 && point.y >= 0) {
+				this.point = point;
+			} else {
+				throw new Exception("Erro no ponto.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
-	/**
-	 * Pega a altura do elemento
-	 *
-	 * @return retorna a altura em inteiro
-	 */
-	public int getHeight() {
-		return height;
+	public Element(Point point, Dimension dimension) {
+		this(point);
+
+		try {
+			if (dimension.width >= 0 && dimension.height >= 0) {
+				this.dimension = dimension;
+			} else {
+				throw new Exception("Erro na dimensao.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
-	public void setHeight(int height) {
-		if (height > 0) {
-			this.height = height;
-		} else {
-			System.out.println("Valor invalido para altura");
+	public Dimension getDimension() {
+		return dimension;
+	}
+
+	public void setDimension(Dimension dimension) {
+		try {
+			if (this.dimension == null) {
+				this.dimension = dimension;
+			} else {
+				throw new Exception("A dimensao ja foi definida");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+	}
+
+	public Point getPoint() {
+		return point;
 	}
 
 	public abstract void render(Graphics g);

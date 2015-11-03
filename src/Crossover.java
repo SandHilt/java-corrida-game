@@ -8,21 +8,23 @@ import java.util.*;
 public class Crossover extends Element {
 
 	private Color color;
+
 	public static ArrayList<Crossover> crossovers;
 	private static int delta;
 	public static final int MAX_VEL = 15;
 
-	public Crossover(int pos_x, int pos_y) {
-		super(pos_x, pos_y);
+	public Crossover(Point point, Dimension dimension, Color color) {
+		super(point, dimension);
+		this.color = color;
 
 		if (crossovers == null) {
 			crossovers = new ArrayList<>();
 			delta = 0;
 		}
+	}
 
-		this.color = Color.WHITE;
-		this.setWidth(3);
-		this.setHeight(15);
+	public Crossover(Point point, Color color) {
+		this(point, new Dimension(3, 15), color);
 	}
 
 	/**
@@ -36,6 +38,7 @@ public class Crossover extends Element {
 
 	public static void setDelta(int delta) {
 		int sum = Crossover.delta + delta;
+
 		if (sum >= 0 && sum <= MAX_VEL) {
 			Crossover.delta += delta;
 		}
@@ -46,21 +49,21 @@ public class Crossover extends Element {
 	}
 
 	public void nextCrossover(int i) {
-		pos_y += getHeight() * 5 * i;
+		getPoint().y += getDimension().height * 5 * i;
 	}
 
 	public void incrementCrossoverPos_y(int limitY) {
-		pos_y += delta;
+		getPoint().y += delta;
 
-		if (pos_y - getHeight() > limitY) {
-			pos_y = 0;
+		if (getPoint().y - getDimension().height > limitY) {
+			getPoint().y = 0;
 		}
 	}
 
 	@Override
 	public void render(Graphics g) {
 		g.setColor(color);
-		g.fillRect(pos_x, pos_y, this.getWidth(), this.getHeight());
+		g.fillRect(getPoint().x, getPoint().y, getDimension().width, getDimension().height);
 	}
 
 }

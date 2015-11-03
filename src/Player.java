@@ -7,60 +7,65 @@ import java.awt.image.*;
  */
 class Player extends Element {
 
-	private final BufferedImage img;
+	private BufferedImage img;
 
-	private int vel;
+	/**
+	 * Numero de pixels que a imagem eh movida
+	 */
+	private int delta;
 
-	public Player(int pos_x, int pos_y) {
-		super(pos_x, pos_y);
-
-		img = LoadImage.getImg("./src/car.png");
-
-		this.setWidth(img.getWidth());
-		this.setHeight(img.getHeight());
+	public Player(Point point, Dimension dimension) {
+		super(point, dimension);
 	}
 
-	public int getVel() {
-		return vel;
+	public Player(Point point) {
+		super(point);
+		img = LoadImage.getImg("./src/car_1.png");
+		setDimension(new Dimension(img.getWidth(), img.getHeight()));
 	}
 
-	public void setVel(int vel) {
-		this.vel = vel;
+	public int getDelta() {
+		return delta;
+	}
+
+	public void setDelta(int delta) {
+		this.delta = delta;
 	}
 
 	public void colision(int limitX, int limitY) {
-		if (pos_x < 0) {
-			pos_x = 0;
-		} else if (pos_x + getWidth() >= limitX) {
-			pos_x = limitX - getWidth();
+
+		if (getPoint().x < 0) {
+			getPoint().x = 0;
+		} else if (getPoint().x + getDimension().width >= limitX) {
+			getPoint().x = limitX - getDimension().width;
 		}
 
-		if (pos_y < 0) {
-			pos_y = 0;
-		} else if (pos_y + getHeight() >= limitY) {
-			pos_y = limitY - getHeight();
+		if (getPoint().y < 0) {
+			getPoint().y = 0;
+		} else if (getPoint().y + getDimension().height >= limitY) {
+			getPoint().y = limitY - getDimension().height;
 		}
 	}
 
 	@Override
 	public void render(Graphics g) {
-		g.drawImage(img, pos_x, pos_y, null);
+		g.drawImage(img, getPoint().x, getPoint().y, null);
 	}
 
 	void moveRight() {
-		pos_x += vel;
+		getPoint().x += delta;
 	}
 
 	void moveLeft() {
-		pos_x -= vel;
+		getPoint().x -= delta;
 	}
 
 	void moveTop() {
-		pos_y -= vel;
+		getPoint().y -= delta;
 	}
 
 	void moveDown() {
-		pos_y += vel;
+		getPoint().y += delta;
 	}
 
 }

@@ -9,7 +9,7 @@ public class LoadImage {
 		BufferedImage buffer;
 		try {
 			buffer = ImageIO.read(new File(file));
-		} catch (IOException ex) {
+		} catch (IOException e) {
 			buffer = null;
 			System.out.println("Erro no carregamento da imagem.");
 		}

@@ -5,16 +5,24 @@ public class Road extends Element {
 
 	private Color roadColor;
 
-	public Road(int pos_x, int pos_y) {
-		super(pos_x, pos_y);
-		this.roadColor = new Color(51, 51, 51);
+	public Road(Point point, Dimension dimension, Color roadColor, Color crossoverColor) {
+		super(point, dimension);
+		this.roadColor = roadColor;
 
 		for (int i = 0; i < 10; i++) {
-			Crossover c = new Crossover(0, 0);
-			c.nextCrossover(i);
-			Crossover.crossovers.add(c);
+			Crossover crossover = new Crossover(new Point(0, 0), crossoverColor);
+			crossover.setColor(crossoverColor);
+			crossover.nextCrossover(i);
+			Crossover.crossovers.add(crossover);
 		}
+	}
 
+	public Road(Point point, Dimension dimension) {
+		this(point, dimension, new Color(51, 51, 51), Color.WHITE);
+	}
+
+	public Road(Point point) {
+		super(point);
 	}
 
 	public void setRoadColor(Color roadColor) {
@@ -24,12 +32,14 @@ public class Road extends Element {
 	@Override
 	public void render(Graphics g) {
 		g.setColor(roadColor);
-		g.fillRect(pos_x, pos_y, this.getWidth(), this.getHeight());
 
-		for (Crossover c : Crossover.crossovers) {
-			c.pos_x = pos_x + (this.getWidth() / 2);
-			c.incrementCrossoverPos_y(this.getHeight());
-			c.render(g);
+		g.fillRect(getPoint().x, getPoint().y, getDimension().width, getDimension().height);
+
+		for (Crossover crossover : Crossover.crossovers) {
+			crossover.getPoint().x = getPoint().x + (getDimension().width / 2);
+			crossover.incrementCrossoverPos_y(getDimension().height);
+			crossover.render(g);
 		}
+
 	}
 }
