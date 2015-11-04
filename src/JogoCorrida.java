@@ -34,9 +34,9 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 		en = new ArrayList<>();
 
-		en.add(new Enemy(new Point(50, 50)));
-		en.add(new Enemy(new Point(100, 50)));
-		en.add(new Enemy(new Point(50, 100)));
+		String s = "./src/tree_obst.png";
+
+		en.add(new Enemy(new Point(150, 50), s));
 
 //		media = new MediaPlayer(new Media("./src/soundtrack.mp3"));
 	}
@@ -91,6 +91,11 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return getWidth() + "x" + getHeight();
+	}
+
 	private void gameLoop() {
 		do {
 			do {
@@ -104,9 +109,9 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					 */
 					if (road == null) {
 						road = new Road(new Point(((int) (getWidth() * .1)), 0), new Dimension((int) (getWidth() * .8), getHeight()));
-					} else {
-						road.render(g);
 					}
+
+					road.render(g);
 
 					render(g);
 
@@ -114,7 +119,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					 * Debug janela WxH carro: posicao tamanho velocidade
 					 */
 					g.setColor(Color.YELLOW);
-					g.drawString("janela:" + getWidth() + "x" + getHeight(), 500, 180);
+					g.drawString("janela:" + toString(), 500, 180);
 					g.drawString("carro_pos:" + p1.getPoint().toString(), 500, 200);
 					g.drawString("carro_tam:" + p1.getDimension().toString(), 500, 220);
 					g.drawString("carro_vel:" + p1.getDelta(), 500, 240);
@@ -123,13 +128,21 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					/**
 					 * Teste de colisao na tela
 					 */
-					p1.colision(getWidth(), getHeight());
+					//p1.colision(road.getPoint().x, road.getPoint().x + (road.getDimension().width / 2));
+//					p1.colision(road.getPoint());
 
 					p1.render(g);
 					p2.render(g);
 
+					/**
+					 * Renderizando cada inimigo
+					 */
 					for (int i = 0; i < en.size(); i++) {
-						en.get(i).render(g);
+						Enemy enemy = en.get(i);
+						enemy.render(g);
+						enemy.move(getHeight());
+						p1.colision(enemy);
+						//p1.colision(enemy.getPoint().x, enemy.getPoint().y);
 					}
 
 				} finally {
@@ -160,11 +173,9 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 				break;
 			case (KeyEvent.VK_UP):
 				Crossover.setDelta(5);
-//				p1.moveTop();
 				break;
 			case (KeyEvent.VK_DOWN):
 				Crossover.setDelta(-5);
-//				p1.moveDown();
 				break;
 		}
 

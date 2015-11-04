@@ -16,6 +16,7 @@ class Player extends Element {
 	private int delta;
 	private Direction direction;
 	private int imageIndex;
+	private byte life;
 
 	public enum Direction {
 
@@ -29,6 +30,7 @@ class Player extends Element {
 		this.imageIndex = imageIndex;
 		loadImg("");
 		setDimension(new Dimension(img.getWidth(), img.getHeight()));
+		life = 3;
 		direction = Direction.FOWARD;
 	}
 
@@ -64,23 +66,38 @@ class Player extends Element {
 	}
 
 	/**
-	 * Testa as colisoes da pista e de outros inimigos
+	 * Colisao com um elemento
 	 *
-	 * @param limitX
-	 * @param limitY
+	 * @param el elemento a ser testado
 	 */
-	public void colision(int limitX, int limitY) {
+	public void colision(Element el) {
+		int dx = getPoint().x - el.getPoint().x;
+		int dy = getPoint().y - el.getPoint().y;
 
-		if (getPoint().x < 0) {
-			getPoint().x = 0;
-		} else if (getPoint().x + getDimension().width >= limitX) {
-			getPoint().x = limitX - getDimension().width;
+		String s = dx + "x" + dy;
+
+		if (dx <= el.getDimension().width) {
+			s += "Mesma linha.";
+			if (dy >= 0 && dy <= el.getDimension().height) {
+				Crossover.stopDelta();
+			}
 		}
 
-		if (getPoint().y < 0) {
-			getPoint().y = 0;
-		} else if (getPoint().y + getDimension().height >= limitY) {
-			getPoint().y = limitY - getDimension().height;
+		System.out.println(s);
+	}
+
+	/**
+	 * Testa as colisoes da pista
+	 *
+	 * @param limitA intervalo A na coordernada X
+	 * @param limitB intervalo B na coordenada X
+	 */
+	public void colision(int limitA, int limitB) {
+
+		if (getPoint().x <= limitA) {
+			getPoint().x = limitA;
+		} else if (getPoint().x + getDimension().width >= limitB) {
+			getPoint().x = limitB - getDimension().width;
 		}
 	}
 
@@ -96,13 +113,4 @@ class Player extends Element {
 	void moveLeft() {
 		getPoint().x -= delta;
 	}
-
-	void moveTop() {
-		getPoint().y -= delta;
-	}
-
-	void moveDown() {
-		getPoint().y += delta;
-	}
-
 }

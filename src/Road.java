@@ -10,7 +10,7 @@ public class Road extends Element {
 		this.roadColor = roadColor;
 
 		for (int i = 0; i < 10; i++) {
-			Crossover crossover = new Crossover(new Point(0, 0), crossoverColor);
+			Crossover crossover = new Crossover(new Point(), crossoverColor);
 			crossover.setColor(crossoverColor);
 			crossover.nextCrossover(i);
 			Crossover.crossovers.add(crossover);
@@ -37,7 +37,7 @@ public class Road extends Element {
 
 		for (Crossover crossover : Crossover.crossovers) {
 			crossover.getPoint().x = getPoint().x + (getDimension().width / 2);
-			crossover.incrementCrossoverPos_y(getDimension().height);
+			crossover.move(getDimension().height);
 			crossover.render(g);
 		}
 

@@ -48,11 +48,25 @@ public class Crossover extends Element {
 		return delta;
 	}
 
+	public static void stopDelta() {
+		delta = 0;
+	}
+
+	/**
+	 * Margem entre cada faixa
+	 *
+	 * @param i
+	 */
 	public void nextCrossover(int i) {
 		getPoint().y += getDimension().height * 5 * i;
 	}
 
-	public void incrementCrossoverPos_y(int limitY) {
+	/**
+	 * Responsavel por fazer a animacao das faixas
+	 *
+	 * @param limitY
+	 */
+	public void move(int limitY) {
 		getPoint().y += delta;
 
 		if (getPoint().y - getDimension().height > limitY) {
