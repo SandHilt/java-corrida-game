@@ -132,7 +132,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 					if (en == null) {
 						en = new ArrayList<Enemy>();
-						en.add(new Enemy(new Point(Enemy.randomPos( road.getPoint().x, road.getDimension().width), 0), "./src/tree_obst.png"));
+						en.add(new Enemy(new Point(Enemy.randomPos(road) , 0), "./src/tree_obst.png"));
 					}
 
 					/**

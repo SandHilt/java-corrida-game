@@ -2,7 +2,6 @@
 import java.awt.*;
 import java.awt.image.*;
 import java.util.*;
-import jdk.nashorn.internal.codegen.CompilerConstants;
 
 public class Enemy extends Element {
 
@@ -73,7 +72,7 @@ public class Enemy extends Element {
 		 * Caso o inimigo tenha saido da tela Ele vai reaparecer em uma nova posicao
 		 */
 		if (getPoint().y + getDimension().height > sizeRoadY) {
-			int pos_x = randomPos(road.getPoint().x, road.getDimension().width / 2);
+			int pos_x = randomPos(road, .5);
 			getPoint().setLocation(pos_x, 0);
 		}
 	}
