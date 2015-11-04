@@ -4,7 +4,9 @@ import java.awt.*;
 /**
  * Classe abstrata para tratar todos os elementos da tela
  */
-public abstract class Element {
+public abstract class Element implements IElement {
+
+	private Rectangle rectangle;
 
 	private Dimension dimension;
 	private Point point;
@@ -49,6 +51,50 @@ public abstract class Element {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Cria o objeto retangulo ou atualiza Se ele estiver criado porem com os
+	 * valores desatualizados
+	 */
+	public void setRectangle() {
+		if (rectangle == null) {
+			rectangle = new Rectangle(point, dimension);
+		} else {
+			if (rectangle.getLocation() != point) {
+				rectangle.setLocation(point);
+			}
+			if (rectangle.getSize() != dimension) {
+				rectangle.setSize(dimension);
+			}
+		}
+	}
+
+	public Rectangle getRectangle() {
+		setRectangle();
+		return rectangle;
+	}
+
+	/**
+	 * Verfica se os elementos se tocaram
+	 *
+	 * @param rectangle
+	 * @return
+	 */
+	public boolean colision(Element element) {
+		setRectangle();
+		return rectangle.intersects(element.getRectangle());
+	}
+
+	/**
+	 * Verfica se um retangulo esta dentro do outro
+	 *
+	 * @param rectangle
+	 * @return
+	 */
+	public boolean inside(Element element) {
+		setRectangle();
+		return rectangle.contains(element.getRectangle());
 	}
 
 	public Point getPoint() {

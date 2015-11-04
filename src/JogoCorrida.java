@@ -1,4 +1,6 @@
 
+import javax.imageio.*;
+import java.io.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -31,12 +33,6 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		p1.setDelta(5);
 
 		p2 = new Player(new Point(550, 500), 2);
-
-		en = new ArrayList<>();
-
-		String s = "./src/tree_obst.png";
-
-		en.add(new Enemy(new Point(150, 50), s));
 
 //		media = new MediaPlayer(new Media("./src/soundtrack.mp3"));
 	}
@@ -105,7 +101,8 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					g.clearRect(0, 0, getWidth(), getHeight());
 
 					/**
-					 * Renderizando a rua
+					 * Renderizando a rua Que comeca a 10% do inicio da janela E tem 80%
+					 * de tamanho
 					 */
 					if (road == null) {
 						road = new Road(new Point(((int) (getWidth() * .1)), 0), new Dimension((int) (getWidth() * .8), getHeight()));
@@ -128,11 +125,15 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					/**
 					 * Teste de colisao na tela
 					 */
-					//p1.colision(road.getPoint().x, road.getPoint().x + (road.getDimension().width / 2));
-//					p1.colision(road.getPoint());
+					p1.isInsideRoad(road);
 
 					p1.render(g);
 					p2.render(g);
+
+					if (en == null) {
+						en = new ArrayList<Enemy>();
+						en.add(new Enemy(new Point(Enemy.randomPos( road.getPoint().x, road.getDimension().width), 0), "./src/tree_obst.png"));
+					}
 
 					/**
 					 * Renderizando cada inimigo
@@ -140,9 +141,8 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					for (int i = 0; i < en.size(); i++) {
 						Enemy enemy = en.get(i);
 						enemy.render(g);
-						enemy.move(getHeight());
-						p1.colision(enemy);
-						//p1.colision(enemy.getPoint().x, enemy.getPoint().y);
+						enemy.move(road);
+						p1.isColision(enemy);
 					}
 
 				} finally {
@@ -179,6 +179,17 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 				break;
 		}
 
+	}
+
+	public static BufferedImage getImg(String file) {
+		BufferedImage buffer;
+		try {
+			buffer = ImageIO.read(new File(file));
+		} catch (IOException e) {
+			buffer = null;
+			System.out.println("Erro no carregamento da imagem.");
+		}
+		return buffer;
 	}
 
 	@Override

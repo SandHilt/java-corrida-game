@@ -2,6 +2,7 @@
 import java.awt.*;
 import java.awt.image.*;
 import java.util.*;
+import jdk.nashorn.internal.codegen.CompilerConstants;
 
 public class Enemy extends Element {
 
@@ -10,7 +11,7 @@ public class Enemy extends Element {
 
 	public Enemy(Point point, String locationImg) {
 		super(point);
-		img = LoadImage.getImg(locationImg);
+		img = JogoCorrida.getImg(locationImg);
 		setDimension(new Dimension(img.getWidth(), img.getHeight()));
 	}
 
@@ -38,12 +39,42 @@ public class Enemy extends Element {
 		this.color = color;
 	}
 
-	public void move(int limitY) {
-		int delta = Crossover.getDelta();
-		getPoint().y += delta;
+	/**
+	 * Gera uma posicao randomica em relacao ao eixo X
+	 *
+	 * @param road
+	 * @return uma posicao arbitraria
+	 */
+	public static int randomPos(Road road) {
+		return randomPos(road, 1);
+	}
 
-		if (getPoint().y + getDimension().height > limitY) {
-			getPoint().y = 0;
+	public static int randomPos(Road road, double modificador) {
+		Random r = new Random();
+
+		int pos_x = road.getPoint().x;
+		int width = (int) (road.getDimension().width * modificador);
+
+		return pos_x + r.nextInt(width);
+	}
+
+	/**
+	 * Responsavel por mover o inimigo
+	 *
+	 * @param road Passando a rua como paramero
+	 */
+	public void move(Road road) {
+		int sizeRoadY = road.getDimension().height;
+
+		int delta = Crossover.getDelta();
+		getPoint().translate(0, delta);
+
+		/**
+		 * Caso o inimigo tenha saido da tela Ele vai reaparecer em uma nova posicao
+		 */
+		if (getPoint().y + getDimension().height > sizeRoadY) {
+			int pos_x = randomPos(road.getPoint().x, road.getDimension().width / 2);
+			getPoint().setLocation(pos_x, 0);
 		}
 	}
 

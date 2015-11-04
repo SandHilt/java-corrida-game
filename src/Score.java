@@ -9,4 +9,8 @@ public class Score {
 		this.score = score;
 	}
 
+	public int getScore() {
+		return score;
+	}
+
 }

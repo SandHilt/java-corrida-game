@@ -18,7 +18,7 @@ public class Crossover extends Element {
 		this.color = color;
 
 		if (crossovers == null) {
-			crossovers = new ArrayList<>();
+			crossovers = new ArrayList<Crossover>();
 			delta = 0;
 		}
 	}
@@ -64,7 +64,7 @@ public class Crossover extends Element {
 	/**
 	 * Responsavel por fazer a animacao das faixas
 	 *
-	 * @param limitY
+	 * @param limitY qual o limite da rua
 	 */
 	public void move(int limitY) {
 		getPoint().y += delta;
