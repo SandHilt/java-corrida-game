@@ -36,9 +36,12 @@ public abstract class Element implements IElement {
 			e.printStackTrace();
 		}
 	}
-
+/**
+ * Pegando o valor atual da dimensao como uma copia
+ * @return copia da dimensao
+ */
 	public Dimension getDimension() {
-		return dimension;
+		return new Dimension(dimension);
 	}
 
 	public void setDimension(Dimension dimension) {
@@ -78,7 +81,7 @@ public abstract class Element implements IElement {
 	/**
 	 * Verfica se os elementos se tocaram
 	 *
-	 * @param rectangle
+	 * @param element
 	 * @return
 	 */
 	public boolean colision(Element element) {
@@ -89,12 +92,12 @@ public abstract class Element implements IElement {
 	/**
 	 * Verfica se um retangulo esta dentro do outro
 	 *
-	 * @param rectangle
+	 * @param element
 	 * @return
 	 */
 	public boolean inside(Element element) {
 		setRectangle();
-		return rectangle.contains(element.getRectangle());
+		return element.getRectangle().contains(rectangle);
 	}
 
 	public Point getPoint() {

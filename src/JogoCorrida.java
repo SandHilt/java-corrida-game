@@ -101,7 +101,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					g.clearRect(0, 0, getWidth(), getHeight());
 
 					/**
-					 * Renderizando a rua Que comeca a 10% do inicio da janela E tem 80%
+					 * Renderizando a rua que comeca a 10% do inicio da janela e tem 80%
 					 * de tamanho
 					 */
 					if (road == null) {
@@ -122,17 +122,14 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					g.drawString("carro_vel:" + p1.getDelta(), 500, 240);
 					g.drawString("crossover_vel:" + Crossover.getDelta() + "/" + Crossover.MAX_VEL, 500, 260);
 
-					/**
-					 * Teste de colisao na tela
-					 */
-					p1.isInsideRoad(road);
-
 					p1.render(g);
 					p2.render(g);
 
 					if (en == null) {
 						en = new ArrayList<Enemy>();
-						en.add(new Enemy(new Point(Enemy.randomPos(road) , 0), "./src/tree_obst.png"));
+						for (int i = 0; i < 5; i++) {
+								en.add(new Enemy(new Point(Enemy.randomPos(road) , 0), "./src/tree_obst.png"));
+						}
 					}
 
 					/**
@@ -164,12 +161,22 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		switch (e.getKeyCode()) {
 
 			case (KeyEvent.VK_RIGHT):
-				p1.moveRight();
-				p1.changeDirection(Player.Direction.RIGHT);
+				if(p1.inside(road)){
+						p1.moveRight();
+						p1.changeDirection(Player.Direction.RIGHT);
+				} else {
+					p1.getPoint().x = road.getPoint().x;
+					p1.moveLeft();
+				}
 				break;
 			case (KeyEvent.VK_LEFT):
-				p1.moveLeft();
-				p1.changeDirection(Player.Direction.LEFT);
+				if(p1.inside(road)){
+						p1.moveLeft();
+						p1.changeDirection(Player.Direction.LEFT);
+				} else {
+					p1.getPoint().x = road.getPoint().x + road.getDimension().width;
+					p1.moveRight();
+				}
 				break;
 			case (KeyEvent.VK_UP):
 				Crossover.setDelta(5);

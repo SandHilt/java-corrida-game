@@ -74,14 +74,6 @@ class Player extends Element {
 
 	}
 
-	public void isInsideRoad(Road road) {
-		if (this.inside(road)) {
-			System.out.println("DENTRO");
-		} else {
-			System.out.println("FORA");
-		}
-	}
-
 	/**
 	 * Se os elementos colidiram, entao para o carro
 	 *
@@ -98,11 +90,11 @@ class Player extends Element {
 		g.drawImage(img, getPoint().x, getPoint().y, null);
 	}
 
-	void moveRight() {
+	public void moveRight() {
 		getPoint().x += delta;
 	}
 
-	void moveLeft() {
+	public void moveLeft() {
 		getPoint().x -= delta;
 	}
 }
