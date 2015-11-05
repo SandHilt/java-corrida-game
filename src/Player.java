@@ -5,7 +5,7 @@ import java.awt.image.*;
 /**
  * refere-se ao jogador usando o carro
  */
-class Player extends Element {
+class Player extends Element implements IPlayer {
 
 	private BufferedImage img;
 
@@ -35,6 +35,7 @@ class Player extends Element {
 			loadImg("");
 			setDimension(new Dimension(img.getWidth(), img.getHeight()));
 			life = 3;
+			delta = 5;
 			direction = Direction.FOWARD;
 
 		} catch (Exception e) {
@@ -81,6 +82,7 @@ class Player extends Element {
 	public void isColision(Enemy enemy) {
 		if (this.colision(enemy)) {
 			Crossover.stopDelta();
+			life--;
 		}
 	}
 
@@ -90,10 +92,14 @@ class Player extends Element {
 	}
 
 	public void moveRight() {
-		getPoint().x += delta;
+		if(life > 0){
+			getPoint().x += delta;
+		}
 	}
 
 	public void moveLeft() {
-		getPoint().x -= delta;
+		if(life > 0){
+			getPoint().x -= delta;
+		}
 	}
 }

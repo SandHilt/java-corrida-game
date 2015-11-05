@@ -7,9 +7,10 @@ import java.awt.event.*;
 import java.awt.image.*;
 import java.util.*;
 
-//import java.rmi.*;
-//import java.rmi.registry.*;
-//import java.rmi.server.*;
+import java.rmi.*;
+import java.rmi.registry.*;
+import java.rmi.server.*;
+
 public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 	private FrameRate fr;
@@ -28,6 +29,9 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 	private String[] locations;
 
 //	private MediaPlayer media;
+
+	Registry reg = null;
+
 	public JogoCorrida() {
 		fr = new FrameRate();
 
@@ -45,6 +49,28 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		Cenario.loadImg();
 
 //		media = new MediaPlayer(new Media("./src/soundtrack.mp3"));
+		try{
+			reg = LocateRegistry.createRegistry(1099);
+		} catch (RemoteException e) {
+			System.out.println("Java RMI registry ja exite");
+		}
+
+		try{
+			IPlayer stub = (IPlayer) UnicastRemoteObject.exportObject(p1, 6789);
+
+			try {
+				reg.bind("Player1", stub);
+			} catch (Exception e) {
+				System.out.println("Nao consigo bindar Player1 ao registro");
+			}
+
+		} catch (RemoteException e) {
+			System.out.println("Nao consigo exportar o objeto Player1");
+		}
+
+		System.out.println("Servidor RMI pronto");
+
+
 	}
 
 	public static void main(String[] args) {
