@@ -23,12 +23,15 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 	private ArrayList<Enemy> enemies;
 
 	public static String relativePath = "./";
+	private volatile boolean splash;
 
 	private String[] locations;
 
 //	private MediaPlayer media;
 	public JogoCorrida() {
 		fr = new FrameRate();
+
+		splash = true;
 
 		road = null;
 
@@ -107,6 +110,11 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					g = bs.getDrawGraphics();
 					g.clearRect(0, 0, getWidth(), getHeight());
 
+					if(splash){
+						BufferedImage img = JogoCorrida.getImg(JogoCorrida.relativePath + "splash_lg.jpg");
+						g.drawImage(img, 0, 0, null);
+					}
+
 					/**
 					 * Renderizando a rua que comeca a 10% do inicio da janela e tem 80%
 					 * de tamanho
@@ -114,6 +122,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					if (road == null) {
 						road = new Road(new Point(((int) (getWidth() * .1)), 0), new Dimension((int) (getWidth() * .8), getHeight()));
 					}
+
 
 					road.render(g);
 
