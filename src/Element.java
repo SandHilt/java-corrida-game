@@ -4,7 +4,7 @@ import java.awt.*;
 /**
  * Classe abstrata para tratar todos os elementos da tela
  */
-public abstract class Element implements IElement {
+public abstract class Element {
 
 	private Rectangle rectangle;
 

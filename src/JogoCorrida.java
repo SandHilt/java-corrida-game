@@ -10,6 +10,9 @@ import java.util.*;
 import java.rmi.*;
 import java.rmi.registry.*;
 import java.rmi.server.*;
+import javax.sound.sampled.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
@@ -23,12 +26,11 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 	private Player p2;
 	private ArrayList<Enemy> enemies;
 
-	public static String relativePath = "./";
+	public static String relativePath = "./src/";
+
 	private volatile boolean splash;
 
 	private String[] locations;
-
-//	private MediaPlayer media;
 
 	Registry reg = null;
 
@@ -46,31 +48,26 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 		locations = new String[]{JogoCorrida.relativePath + "tree_obst.png", JogoCorrida.relativePath + "stone_obst.png"};
 
-		Cenario.loadImg();
-
-//		media = new MediaPlayer(new Media("./src/soundtrack.mp3"));
-		try{
-			reg = LocateRegistry.createRegistry(1099);
-		} catch (RemoteException e) {
-			System.out.println("Java RMI registry ja exite");
-		}
-
-		try{
-			IPlayer stub = (IPlayer) UnicastRemoteObject.exportObject(p1, 6789);
-
-			try {
-				reg.bind("Player1", stub);
-			} catch (Exception e) {
-				System.out.println("Nao consigo bindar Player1 ao registro");
-			}
-
-		} catch (RemoteException e) {
-			System.out.println("Nao consigo exportar o objeto Player1");
-		}
-
-		System.out.println("Servidor RMI pronto");
-
-
+//		try {
+//			reg = LocateRegistry.createRegistry(1099);
+//		} catch (RemoteException e) {
+//			System.out.println("Java RMI registry ja exite");
+//		}
+//
+//		try {
+//			IPlayer stub = (IPlayer) UnicastRemoteObject.exportObject(p1, 6789);
+//
+//			try {
+//				reg.bind("Player1", stub);
+//			} catch (Exception e) {
+//				System.out.println("Nao consigo bindar Player1 ao registro");
+//			}
+//
+//		} catch (RemoteException e) {
+//			System.out.println("Nao consigo exportar o objeto Player1");
+//		}
+//
+//		System.out.println("Servidor RMI pronto");
 	}
 
 	public static void main(String[] args) {
@@ -102,7 +99,6 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		canvas.createBufferStrategy(2);
 		bs = canvas.getBufferStrategy();
 
-//		media.play();
 		canvas.addKeyListener(this);
 
 		gameThread = new Thread(this);
@@ -136,11 +132,11 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					g = bs.getDrawGraphics();
 					g.clearRect(0, 0, getWidth(), getHeight());
 
-					if(splash){
-						BufferedImage img = JogoCorrida.getImg(JogoCorrida.relativePath + "splash_lg.jpg");
-						g.drawImage(img, 0, 0, null);
-					}
-
+//					if (splash) {
+//						BufferedImage img = JogoCorrida.getImg(JogoCorrida.relativePath + "splash_lg.jpg");
+//						g.drawImage(img, 0, 0, null);
+//						splash = false;
+//					}
 					/**
 					 * Renderizando a rua que comeca a 10% do inicio da janela e tem 80%
 					 * de tamanho
@@ -149,8 +145,12 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 						road = new Road(new Point(((int) (getWidth() * .1)), 0), new Dimension((int) (getWidth() * .8), getHeight()));
 					}
 
-
 					road.render(g);
+
+					Cenario.loadImg(road, getWidth());
+
+					Cenario cenario = Cenario.nextImg();
+					cenario.render(g);
 
 					render(g);
 
@@ -164,33 +164,38 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					g.drawString("carro_vel:" + p1.getDelta(), 500, 240);
 					g.drawString("crossover_vel:" + Crossover.getDelta() + "/" + Crossover.MAX_VEL, 500, 260);
 
-					p1.render(g);
-					p2.render(g);
+					if (p1.getGameOver()) {
+						p1.gameOver(g, new Point(getWidth() / 2, getHeight() / 2));
+					} else {
 
-					/**
-					 * Gerando uma posicao randomica para os inimigos
-					 */
-					if (enemies == null) {
-						enemies = new ArrayList<Enemy>();
-						for (int i = 0; i < 5; i++) {
-							try {
-								Thread.sleep(1);
-							} catch (InterruptedException e) {
+						p1.render(g);
+						p2.render(g);
+
+						/**
+						 * Gerando uma posicao randomica para os inimigos
+						 */
+						if (enemies == null) {
+							enemies = new ArrayList<Enemy>();
+							for (int i = 0; i < 5; i++) {
+								try {
+									Thread.sleep(1);
+								} catch (InterruptedException e) {
+								}
+								Enemy enemy = new Enemy(locations[new Random().nextInt(2)]);
+								enemy.getPoint().x = enemy.randomPos(road);
+								enemies.add(enemy);
 							}
-							Enemy enemy = new Enemy(locations[new Random().nextInt(2)]);
-							enemy.getPoint().x = enemy.randomPos(road);
-							enemies.add(enemy);
 						}
-					}
 
-					/**
-					 * Renderizando cada inimigo
-					 */
-					for (int i = 0; i < enemies.size(); i++) {
-						Enemy enemy = enemies.get(i);
-						enemy.render(g);
-						enemy.move(road);
-						p1.isColision(enemy);
+						/**
+						 * Renderizando cada inimigo
+						 */
+						for (int i = 0; i < enemies.size(); i++) {
+							Enemy enemy = enemies.get(i);
+							enemy.render(g);
+							enemy.move(road);
+							p1.isColision(enemy);
+						}
 					}
 
 				} finally {
@@ -209,32 +214,32 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		switch (e.getKeyCode()) {
-
-			case (KeyEvent.VK_RIGHT):
-				if (p1.inside(road)) {
-					p1.moveRight();
-					p1.changeDirection(Player.Direction.RIGHT);
-				} else {
-					p1.getPoint().x = road.getPoint().x + road.getDimension().width - p1.getDimension().width;
-				}
-				break;
-			case (KeyEvent.VK_LEFT):
-				if (p1.inside(road)) {
-					p1.moveLeft();
-					p1.changeDirection(Player.Direction.LEFT);
-				} else {
-					p1.getPoint().x = road.getPoint().x;
-				}
-				break;
-			case (KeyEvent.VK_UP):
-				Crossover.setDelta(5);
-				break;
-			case (KeyEvent.VK_DOWN):
-				Crossover.setDelta(-5);
-				break;
+		if(p1.haveLife()){
+			switch (e.getKeyCode()) {
+				case (KeyEvent.VK_RIGHT):
+					if (p1.inside(road)) {
+							p1.moveRight();
+							p1.changeDirection(Player.Direction.RIGHT);
+					} else {
+						p1.getPoint().x = road.getPoint().x + road.getDimension().width - p1.getDimension().width;
+					}
+					break;
+				case (KeyEvent.VK_LEFT):
+					if (p1.inside(road)) {
+							p1.moveLeft();
+							p1.changeDirection(Player.Direction.LEFT);
+					} else {
+						p1.getPoint().x = road.getPoint().x;
+					}
+					break;
+				case (KeyEvent.VK_UP):
+						Crossover.setDelta(5);
+					break;
+				case (KeyEvent.VK_DOWN):
+						Crossover.setDelta(-5);
+					break;
+			}
 		}
-
 	}
 
 	public static BufferedImage getImg(String file) {
@@ -263,9 +268,6 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		try {
 			running = false;
 			gameThread.join();
-
-//			media.stop();
-//			media.dispose();
 		} catch (InterruptedException e) {
 		}
 		System.exit(0);

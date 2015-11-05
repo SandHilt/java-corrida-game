@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.rmi.*;
 
 interface IPlayer extends Remote{

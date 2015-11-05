@@ -16,6 +16,7 @@ class Player extends Element implements IPlayer {
 	private Direction direction;
 	private int imageIndex;
 	private byte life;
+	private volatile boolean gameOver;
 
 	public enum Direction {
 
@@ -37,6 +38,7 @@ class Player extends Element implements IPlayer {
 			life = 3;
 			delta = 5;
 			direction = Direction.FOWARD;
+			gameOver = false;
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -49,6 +51,20 @@ class Player extends Element implements IPlayer {
 
 	public void setDelta(int delta) {
 		this.delta = delta;
+	}
+
+	public boolean getGameOver() {
+		return gameOver;
+	}
+
+	public boolean haveLife() {
+		return life > 0;
+	}
+
+	public void gameOver(Graphics g, Point p) {
+		g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 72));
+		g.setColor(Color.WHITE);
+		g.drawString("GAME OVER", p.x, p.y);
 	}
 
 	/**
@@ -71,7 +87,6 @@ class Player extends Element implements IPlayer {
 		} else {
 			loadImg("");
 		}
-
 	}
 
 	/**
@@ -80,10 +95,19 @@ class Player extends Element implements IPlayer {
 	 * @param element
 	 */
 	public void isColision(Enemy enemy) {
-		if (this.colision(enemy)) {
+		if (this.colision(enemy) && enemy.isObstacle()) {
 			Crossover.stopDelta();
 			life--;
+			enemy.setObstacle();
 		}
+	}
+
+	public void moveRight() {
+		getPoint().x += delta;
+	}
+
+	public void moveLeft() {
+		getPoint().x -= delta;
 	}
 
 	@Override
@@ -91,15 +115,4 @@ class Player extends Element implements IPlayer {
 		g.drawImage(img, getPoint().x, getPoint().y, null);
 	}
 
-	public void moveRight() {
-		if(life > 0){
-			getPoint().x += delta;
-		}
-	}
-
-	public void moveLeft() {
-		if(life > 0){
-			getPoint().x -= delta;
-		}
-	}
 }

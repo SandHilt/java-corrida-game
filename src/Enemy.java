@@ -6,11 +6,21 @@ import java.util.*;
 public class Enemy extends Element {
 
 	private BufferedImage img;
+	private boolean obstacle;
 
 	public Enemy(String locationImg) {
 		super(new Point());
 		img = JogoCorrida.getImg(locationImg);
 		setDimension(new Dimension(img.getWidth(), img.getHeight()));
+		obstacle = true;
+	}
+
+	public void setObstacle() {
+		obstacle = false;
+	}
+
+	public boolean isObstacle() {
+		return obstacle;
 	}
 
 	/**
@@ -58,6 +68,7 @@ public class Enemy extends Element {
 		 * Caso o inimigo tenha saido da tela ele vai reaparecer em uma nova posicao
 		 */
 		if (getPoint().y + getDimension().height > sizeRoadY) {
+			obstacle = true;
 			int pos_x = randomPos(road);
 			getPoint().setLocation(pos_x, 0);
 		}
