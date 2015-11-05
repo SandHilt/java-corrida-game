@@ -22,6 +22,8 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 	private Player p2;
 	private ArrayList<Enemy> enemies;
 
+	public static String relativePath = "./";
+
 	private String[] locations;
 
 //	private MediaPlayer media;
@@ -35,7 +37,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 		p2 = new Player(new Point(550, 500), 2);
 
-		locations = new String[]{"./src/tree_obst.png", "./src/stone_obst.png"};
+		locations = new String[]{JogoCorrida.relativePath + "tree_obst.png", JogoCorrida.relativePath + "stone_obst.png"};
 
 		Cenario.loadImg();
 
@@ -179,8 +181,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					p1.moveRight();
 					p1.changeDirection(Player.Direction.RIGHT);
 				} else {
-					p1.getPoint().x = road.getPoint().x;
-					p1.moveLeft();
+					p1.getPoint().x = road.getPoint().x + road.getDimension().width - p1.getDimension().width;
 				}
 				break;
 			case (KeyEvent.VK_LEFT):
@@ -188,8 +189,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					p1.moveLeft();
 					p1.changeDirection(Player.Direction.LEFT);
 				} else {
-					p1.getPoint().x = road.getPoint().x + road.getDimension().width;
-					p1.moveRight();
+					p1.getPoint().x = road.getPoint().x;
 				}
 				break;
 			case (KeyEvent.VK_UP):

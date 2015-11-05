@@ -17,7 +17,7 @@ public class Cenario extends Element {
 		if (objects == null) {
 			objects = new ArrayList<Cenario>();
 			for (int i = 0; i < 16; i++) {
-				BufferedImage img = JogoCorrida.getImg("./src/sprites/" + i + ".png");
+				BufferedImage img = JogoCorrida.getImg(JogoCorrida.relativePath + "sprites/" + i + ".png");
 				Cenario cenario = new Cenario(new Point(), img);
 				objects.add(cenario);
 			}

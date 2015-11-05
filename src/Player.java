@@ -60,7 +60,7 @@ class Player extends Element {
 		if (!"".equals(rotation)) {
 			rotation = "_" + rotation;
 		}
-		img = JogoCorrida.getImg("./src/car_" + imageIndex + rotation + ".png");
+		img = JogoCorrida.getImg(JogoCorrida.relativePath + "car_" + imageIndex + rotation + ".png");
 	}
 
 	public void changeDirection(Direction direction) {
