@@ -8,7 +8,6 @@ import java.awt.image.*;
 class Player extends Element {
 
 	private BufferedImage img;
-	private static Player player;
 
 	/**
 	 * Numero de pixels que a imagem eh movida

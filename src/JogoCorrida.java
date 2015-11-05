@@ -6,7 +6,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
 import java.util.*;
-//import javafx.scene.media.*;
 
 //import java.rmi.*;
 //import java.rmi.registry.*;
@@ -21,7 +20,9 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 	private Road road;
 	private Player p1;
 	private Player p2;
-	private ArrayList<Enemy> en;
+	private ArrayList<Enemy> enemies;
+
+	private String[] locations;
 
 //	private MediaPlayer media;
 	public JogoCorrida() {
@@ -30,9 +31,13 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		road = null;
 
 		p1 = new Player(new Point(250, 500), 1);
-		p1.setDelta(5);
+		p1.setDelta(10);
 
 		p2 = new Player(new Point(550, 500), 2);
+
+		locations = new String[]{"./src/tree_obst.png", "./src/stone_obst.png"};
+
+		Cenario.loadImg();
 
 //		media = new MediaPlayer(new Media("./src/soundtrack.mp3"));
 	}
@@ -54,7 +59,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 	public void createAndShowGui() {
 		Canvas canvas = new Canvas();
 		canvas.setSize(800, 600);
-		canvas.setBackground(Color.GREEN);
+		canvas.setBackground(new Color(1, 68, 33));
 		canvas.setIgnoreRepaint(true);
 		getContentPane().add(canvas);
 		setTitle("The Need Velocity Run");
@@ -125,18 +130,27 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					p1.render(g);
 					p2.render(g);
 
-					if (en == null) {
-						en = new ArrayList<Enemy>();
+					/**
+					 * Gerando uma posicao randomica para os inimigos
+					 */
+					if (enemies == null) {
+						enemies = new ArrayList<Enemy>();
 						for (int i = 0; i < 5; i++) {
-								en.add(new Enemy(new Point(Enemy.randomPos(road) , 0), "./src/tree_obst.png"));
+							try {
+								Thread.sleep(1);
+							} catch (InterruptedException e) {
+							}
+							Enemy enemy = new Enemy(locations[new Random().nextInt(2)]);
+							enemy.getPoint().x = enemy.randomPos(road);
+							enemies.add(enemy);
 						}
 					}
 
 					/**
 					 * Renderizando cada inimigo
 					 */
-					for (int i = 0; i < en.size(); i++) {
-						Enemy enemy = en.get(i);
+					for (int i = 0; i < enemies.size(); i++) {
+						Enemy enemy = enemies.get(i);
 						enemy.render(g);
 						enemy.move(road);
 						p1.isColision(enemy);
@@ -161,18 +175,18 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		switch (e.getKeyCode()) {
 
 			case (KeyEvent.VK_RIGHT):
-				if(p1.inside(road)){
-						p1.moveRight();
-						p1.changeDirection(Player.Direction.RIGHT);
+				if (p1.inside(road)) {
+					p1.moveRight();
+					p1.changeDirection(Player.Direction.RIGHT);
 				} else {
 					p1.getPoint().x = road.getPoint().x;
 					p1.moveLeft();
 				}
 				break;
 			case (KeyEvent.VK_LEFT):
-				if(p1.inside(road)){
-						p1.moveLeft();
-						p1.changeDirection(Player.Direction.LEFT);
+				if (p1.inside(road)) {
+					p1.moveLeft();
+					p1.changeDirection(Player.Direction.LEFT);
 				} else {
 					p1.getPoint().x = road.getPoint().x + road.getDimension().width;
 					p1.moveRight();

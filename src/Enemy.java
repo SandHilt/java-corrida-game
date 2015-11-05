@@ -5,11 +5,10 @@ import java.util.*;
 
 public class Enemy extends Element {
 
-//	private Color color;
 	private BufferedImage img;
 
-	public Enemy(Point point, String locationImg) {
-		super(point);
+	public Enemy(String locationImg) {
+		super(new Point());
 		img = JogoCorrida.getImg(locationImg);
 		setDimension(new Dimension(img.getWidth(), img.getHeight()));
 	}
@@ -20,7 +19,7 @@ public class Enemy extends Element {
 	 * @param road
 	 * @return uma posicao arbitraria
 	 */
-	public static int randomPos(Road road) {
+	public int randomPos(Road road) {
 		return randomPos(road, 1);
 	}
 
@@ -30,13 +29,18 @@ public class Enemy extends Element {
 	 * @param modificador
 	 * @return
 	 */
-	public static int randomPos(Road road, double modificador) {
+	public int randomPos(Road road, double modificador) {
+		try {
+			Thread.sleep(1);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		Random r = new Random();
 
 		int pos_x = road.getPoint().x;
 		int width = (int) (road.getDimension().width * modificador);
 
-		return pos_x + r.nextInt(width);
+		return pos_x + r.nextInt(width) - getDimension().width;
 	}
 
 	/**
@@ -54,19 +58,14 @@ public class Enemy extends Element {
 		 * Caso o inimigo tenha saido da tela ele vai reaparecer em uma nova posicao
 		 */
 		if (getPoint().y + getDimension().height > sizeRoadY) {
-			int pos_x = randomPos(road, .5);
+			int pos_x = randomPos(road);
 			getPoint().setLocation(pos_x, 0);
 		}
 	}
 
 	@Override
 	public void render(Graphics g) {
-//		if (img == null) {
-//			g.setColor(color);
-//			g.fillRect(getPoint().x, getPoint().y, getDimension().width, getDimension().height);
-//		} else {
 		g.drawImage(img, getPoint().x, getPoint().y, null);
-//		}
 	}
 
 }
