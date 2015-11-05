@@ -1,6 +1,7 @@
-- Todo List
-	1. RMI
-	2. Cenário
+### Todo List
+
+- [ ] RMI
+- [ ] Cenário
 
 ### Bibliografia
 - Usado apenas livro como referencia.
