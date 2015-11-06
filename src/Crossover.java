@@ -13,8 +13,8 @@ public class Crossover extends Element {
 	private static int delta;
 	public static final int MAX_VEL = 15;
 
-	public Crossover(Point point, Dimension dimension, Color color) {
-		super(point, dimension);
+	public Crossover(Rectangle r, Color color) {
+		super(r);
 		this.color = color;
 
 		if (crossovers == null) {
@@ -24,7 +24,7 @@ public class Crossover extends Element {
 	}
 
 	public Crossover(Point point, Color color) {
-		this(point, new Dimension(3, 15), color);
+		this(new Rectangle(point, new Dimension(3, 15)), color);
 	}
 
 	/**

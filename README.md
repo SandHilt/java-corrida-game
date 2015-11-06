@@ -2,6 +2,7 @@
 
 - [ ] RMI
 - [ ] Cenário
+- [ ] Som
 
 ### Bibliografia
 - Usado apenas livro como referencia.

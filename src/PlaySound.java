@@ -1,4 +1,5 @@
 import javax.sound.sampled.*;
+import java.io.*;
 
 class PlaySound implements LineListener{
 	private volatile boolean open = false;
@@ -28,8 +29,12 @@ public byte[] readByte(InputStream in) {
 public void sound() throws Exception {
 	Clip clip = AudioSystem.getClip();
 	clip.addLineListener(this);
-	InputStream resource = ResourceLoader.load()
+//	InputStream resource = ResourceLoader.load();
 }
+
+	@Override
+	public void update(LineEvent event) {
+	}
 
 
 }

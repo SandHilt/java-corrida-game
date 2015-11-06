@@ -61,6 +61,12 @@ class Player extends Element implements IPlayer {
 		return life > 0;
 	}
 
+	/**
+	 * Renderiza o game over
+	 *
+	 * @param g
+	 * @param p
+	 */
 	public void gameOver(Graphics g, Point p) {
 		g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 72));
 		g.setColor(Color.WHITE);
@@ -102,10 +108,12 @@ class Player extends Element implements IPlayer {
 		}
 	}
 
+	@Override
 	public void moveRight() {
 		getPoint().x += delta;
 	}
 
+	@Override
 	public void moveLeft() {
 		getPoint().x -= delta;
 	}

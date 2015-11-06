@@ -48,26 +48,26 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 		locations = new String[]{JogoCorrida.relativePath + "tree_obst.png", JogoCorrida.relativePath + "stone_obst.png"};
 
-//		try {
-//			reg = LocateRegistry.createRegistry(1099);
-//		} catch (RemoteException e) {
-//			System.out.println("Java RMI registry ja exite");
-//		}
-//
-//		try {
-//			IPlayer stub = (IPlayer) UnicastRemoteObject.exportObject(p1, 6789);
-//
-//			try {
-//				reg.bind("Player1", stub);
-//			} catch (Exception e) {
-//				System.out.println("Nao consigo bindar Player1 ao registro");
-//			}
-//
-//		} catch (RemoteException e) {
-//			System.out.println("Nao consigo exportar o objeto Player1");
-//		}
-//
-//		System.out.println("Servidor RMI pronto");
+		try {;
+			reg = LocateRegistry.createRegistry(1099);
+		} catch (RemoteException e) {
+			System.out.println("Java RMI registry ja exite");
+		}
+
+		try {
+			IPlayer stub = (IPlayer) UnicastRemoteObject.exportObject(p1, 6789);
+
+			try {
+				reg.bind("Player1", stub);
+			} catch (Exception e) {
+				System.out.println("Nao consigo bindar Player1 ao registro");
+			}
+
+		} catch (RemoteException e) {
+			System.out.println("Nao consigo exportar o objeto Player1");
+		}
+
+		System.out.println("Servidor RMI pronto");
 	}
 
 	public static void main(String[] args) {
@@ -142,15 +142,15 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					 * de tamanho
 					 */
 					if (road == null) {
-						road = new Road(new Point(((int) (getWidth() * .1)), 0), new Dimension((int) (getWidth() * .8), getHeight()));
+						road = new Road(new Rectangle((int) (getWidth() * .1), 0, (int) (getWidth() * .8), getHeight()));
 					}
 
 					road.render(g);
 
-					Cenario.loadImg(road, getWidth());
-
-					Cenario cenario = Cenario.nextImg();
-					cenario.render(g);
+//					Cenario.loadImg(road, getWidth());
+//
+//					Cenario cenario = Cenario.nextImg();
+//					cenario.render(g);
 
 					render(g);
 

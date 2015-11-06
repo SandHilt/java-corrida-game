@@ -5,8 +5,8 @@ public class Road extends Element {
 
 	private Color roadColor;
 
-	public Road(Point point, Dimension dimension, Color roadColor, Color crossoverColor) {
-		super(point, dimension);
+	public Road(Rectangle r, Color roadColor, Color crossoverColor) {
+		super(r);
 		this.roadColor = roadColor;
 
 		for (int i = 0; i < 10; i++) {
@@ -17,8 +17,8 @@ public class Road extends Element {
 		}
 	}
 
-	public Road(Point point, Dimension dimension) {
-		this(point, dimension, new Color(51, 51, 51), Color.WHITE);
+	public Road(Rectangle r) {
+		this(r, new Color(51, 51, 51), Color.WHITE);
 	}
 
 	public Road(Point point) {

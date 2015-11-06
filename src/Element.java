@@ -7,14 +7,19 @@ import java.awt.*;
 public abstract class Element {
 
 	private Rectangle rectangle;
+	private Vector2f vector;
 
-	private Dimension dimension;
-	private Point point;
+	public Element() {
+		rectangle = new Rectangle();
+		vector = new Vector2f();
+	}
 
 	public Element(Point point) {
+		this();
+
 		try {
 			if (point.x >= 0 && point.y >= 0) {
-				this.point = point;
+				rectangle.setLocation(point);
 			} else {
 				throw new Exception("Erro no ponto.");
 			}
@@ -23,12 +28,12 @@ public abstract class Element {
 		}
 	}
 
-	public Element(Point point, Dimension dimension) {
-		this(point);
+	public Element(Rectangle rectangle) {
+		this(rectangle.getLocation());
 
 		try {
-			if (dimension.width >= 0 && dimension.height >= 0) {
-				this.dimension = dimension;
+			if (rectangle.x >= 0 && rectangle.x >= 0) {
+				this.rectangle.setSize(rectangle.getSize());
 			} else {
 				throw new Exception("Erro na dimensao.");
 			}
@@ -36,45 +41,34 @@ public abstract class Element {
 			e.printStackTrace();
 		}
 	}
-/**
- * Pegando o valor atual da dimensao como uma copia
- * @return copia da dimensao
- */
+
+	public Element(Rectangle rectangle, Vector2f vector) {
+		this(rectangle);
+		this.vector = vector;
+	}
+
+	/**
+	 * Pegando o valor atual da dimensao como uma copia
+	 *
+	 * @return copia da dimensao
+	 */
 	public Dimension getDimension() {
-		return new Dimension(dimension);
+		return rectangle.getSize();
 	}
 
 	public void setDimension(Dimension dimension) {
 		try {
-			if (this.dimension == null) {
-				this.dimension = dimension;
+			if (rectangle.isEmpty()) {
+				rectangle.setSize(dimension);
 			} else {
-				throw new Exception("A dimensao ja foi definida");
+				throw new Exception("A dimensao ja foi definida.");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	/**
-	 * Cria o objeto retangulo ou atualiza Se ele estiver criado porem com os
-	 * valores desatualizados
-	 */
-	public void setRectangle() {
-		if (rectangle == null) {
-			rectangle = new Rectangle(point, dimension);
-		} else {
-			if (rectangle.getLocation() != point) {
-				rectangle.setLocation(point);
-			}
-			if (rectangle.getSize() != dimension) {
-				rectangle.setSize(dimension);
-			}
-		}
-	}
-
 	public Rectangle getRectangle() {
-		setRectangle();
 		return rectangle;
 	}
 
@@ -85,7 +79,6 @@ public abstract class Element {
 	 * @return
 	 */
 	public boolean colision(Element element) {
-		setRectangle();
 		return rectangle.intersects(element.getRectangle());
 	}
 
@@ -96,12 +89,15 @@ public abstract class Element {
 	 * @return
 	 */
 	public boolean inside(Element element) {
-		setRectangle();
 		return element.getRectangle().contains(rectangle);
 	}
 
 	public Point getPoint() {
-		return point;
+		return rectangle.getLocation();
+	}
+
+	public void setPoint(Point p) {
+		rectangle.setLocation(p);
 	}
 
 	public abstract void render(Graphics g);
