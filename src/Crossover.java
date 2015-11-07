@@ -58,7 +58,7 @@ public class Crossover extends Element {
 	 * @param i
 	 */
 	public void nextCrossover(int i) {
-		getPoint().y += getDimension().height * 5 * i;
+		y += height * 5 * i;
 	}
 
 	/**
@@ -67,17 +67,17 @@ public class Crossover extends Element {
 	 * @param limitY qual o limite da rua
 	 */
 	public void move(int limitY) {
-		getPoint().y += delta;
+		y += delta;
 
-		if (getPoint().y - getDimension().height > limitY) {
-			getPoint().y = 0;
+		if (y - height > limitY) {
+			y = 0;
 		}
 	}
 
 	@Override
 	public void render(Graphics g) {
 		g.setColor(color);
-		g.fillRect(getPoint().x, getPoint().y, getDimension().width, getDimension().height);
+		g.fillRect(x, y, width, height);
 	}
 
 }

@@ -33,11 +33,11 @@ public class Road extends Element {
 	public void render(Graphics g) {
 		g.setColor(roadColor);
 
-		g.fillRect(getPoint().x, getPoint().y, getDimension().width, getDimension().height);
+		g.fillRect(x, y, width, height);
 
 		for (Crossover crossover : Crossover.crossovers) {
-			crossover.getPoint().x = getPoint().x + (getDimension().width / 2);
-			crossover.move(getDimension().height);
+			crossover.x = x + (width / 2);
+			crossover.move(height);
 			crossover.render(g);
 		}
 

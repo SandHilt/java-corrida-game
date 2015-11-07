@@ -28,15 +28,15 @@ public class Cenario extends Element {
 	}
 
 	public void move(Road road) {
-		int sizeRoadY = road.getDimension().height;
+		int sizeRoadY = road.height;
 
 		int delta = Crossover.getDelta();
-		getPoint().translate(0, delta);
+		super.translate(0, delta);
 
 		/**
 		 * Caso o cenario tenha saido da tela ele vai chamar outro elemento
 		 */
-		if (getPoint().y + getDimension().height > sizeRoadY) {
+		if (y + height > sizeRoadY) {
 
 		}
 	}
@@ -52,8 +52,8 @@ public class Cenario extends Element {
 				Random r = new Random(System.currentTimeMillis() + i);
 
 				try {
-					int left = r.nextInt(road.getPoint().x - img.getWidth() / 2);
-					int right = road.getPoint().x + road.getDimension().width + left;
+					int left = r.nextInt(road.x - img.getWidth() / 2);
+					int right = road.x + road.width + left;
 
 					if (pos == 0) {
 						pos = left;
@@ -74,7 +74,7 @@ public class Cenario extends Element {
 
 	@Override
 	public void render(Graphics g) {
-		g.drawImage(img, getPoint().x, getPoint().y, null);
+		g.drawImage(img, x, y, null);
 	}
 
 }

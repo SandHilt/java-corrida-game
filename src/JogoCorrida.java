@@ -159,8 +159,8 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					 */
 					g.setColor(Color.YELLOW);
 					g.drawString("janela:" + toString(), 500, 180);
-					g.drawString("carro_pos:" + p1.getPoint().toString(), 500, 200);
-					g.drawString("carro_tam:" + p1.getDimension().toString(), 500, 220);
+					g.drawString("carro_pos:" + p1.getLocation().toString(), 500, 200);
+					g.drawString("carro_tam:" + p1.getSize().toString(), 500, 220);
 					g.drawString("carro_vel:" + p1.getDelta(), 500, 240);
 					g.drawString("crossover_vel:" + Crossover.getDelta() + "/" + Crossover.MAX_VEL, 500, 260);
 
@@ -182,7 +182,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 								} catch (InterruptedException e) {
 								}
 								Enemy enemy = new Enemy(locations[new Random().nextInt(2)]);
-								enemy.getPoint().x = enemy.randomPos(road);
+								enemy.x = enemy.randomPos(road);
 								enemies.add(enemy);
 							}
 						}
@@ -217,19 +217,19 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		if(p1.haveLife()){
 			switch (e.getKeyCode()) {
 				case (KeyEvent.VK_RIGHT):
-					if (p1.inside(road)) {
+					if (road.contains(p1)) {
 							p1.moveRight();
 							p1.changeDirection(Player.Direction.RIGHT);
 					} else {
-						p1.getPoint().x = road.getPoint().x + road.getDimension().width - p1.getDimension().width;
+						p1.x = road.x + road.width - p1.width;
 					}
 					break;
 				case (KeyEvent.VK_LEFT):
-					if (p1.inside(road)) {
+					if (road.contains(p1)) {
 							p1.moveLeft();
 							p1.changeDirection(Player.Direction.LEFT);
 					} else {
-						p1.getPoint().x = road.getPoint().x;
+						p1.x = road.x;
 					}
 					break;
 				case (KeyEvent.VK_UP):

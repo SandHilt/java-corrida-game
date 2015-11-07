@@ -1,6 +1,7 @@
 
 import java.awt.*;
 import java.awt.image.*;
+import java.rmi.RemoteException;
 
 /**
  * refere-se ao jogador usando o carro
@@ -9,10 +10,7 @@ class Player extends Element implements IPlayer {
 
 	private BufferedImage img;
 
-	/**
-	 * Numero de pixels que a imagem eh movida
-	 */
-	private int delta;
+	private int delta; /* Numero de pixels que a imagem eh movida */
 	private Direction direction;
 	private int imageIndex;
 	private byte life;
@@ -34,7 +32,7 @@ class Player extends Element implements IPlayer {
 
 			this.imageIndex = imageIndex;
 			loadImg("");
-			setDimension(new Dimension(img.getWidth(), img.getHeight()));
+			super.setSize(img.getWidth(), img.getHeight());
 			life = 3;
 			delta = 5;
 			direction = Direction.FOWARD;
@@ -83,7 +81,7 @@ class Player extends Element implements IPlayer {
 		if (!"".equals(rotation)) {
 			rotation = "_" + rotation;
 		}
-		img = JogoCorrida.getImg(JogoCorrida.relativePath + "car_" + imageIndex + rotation + ".png");
+		img = JogoCorrida.getImg(JogoCorrida.relativePath + "car/car_" + imageIndex + rotation + ".png");
 	}
 
 	public void changeDirection(Direction direction) {
@@ -101,7 +99,8 @@ class Player extends Element implements IPlayer {
 	 * @param element
 	 */
 	public void isColision(Enemy enemy) {
-		if (this.colision(enemy) && enemy.isObstacle()) {
+		/* this.colision(enemy) */
+		if (super.intersects(enemy) && enemy.isObstacle()) {
 			Crossover.stopDelta();
 			life--;
 			enemy.setObstacle();
@@ -110,17 +109,22 @@ class Player extends Element implements IPlayer {
 
 	@Override
 	public void moveRight() {
-		getPoint().x += delta;
+		x += delta;
 	}
 
 	@Override
 	public void moveLeft() {
-		getPoint().x -= delta;
+		x -= delta;
 	}
 
 	@Override
 	public void render(Graphics g) {
-		g.drawImage(img, getPoint().x, getPoint().y, null);
+		g.drawImage(img, x, y, null);
+	}
+
+	@Override
+	public Point getPoint() throws RemoteException {
+		return new Point(x, y);
 	}
 
 }
