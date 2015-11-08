@@ -7,43 +7,62 @@ import java.awt.*;
 public abstract class Element extends Rectangle {
 
 	private Vector2f vector;
+	private Color color;
 
 	public Element() {
-		this(new Rectangle(), new Vector2f());
-	}
-
-	public Element(Point point) {
-		this();
-		setLocation(point);
+		super(new Rectangle());
+		vector = new Vector2f();
+		color = Color.WHITE;
 	}
 
 	public Element(Rectangle rectangle) {
-		this(rectangle.getLocation());
-		setSize(rectangle.getSize());
+		this();
+		setBounds(rectangle);
 	}
 
-	public Element(Rectangle rectangle, Vector2f vector) {
-		super(rectangle);
+	public Element(Rectangle rectangle, Vector2f vector, Color color) {
+		this(rectangle);
 		this.vector = vector;
+		this.color = color;
+	}
+
+	public Element(Rectangle rectangle, Color color) {
+		this(rectangle);
+		this.color = color;
+	}
+
+	public Element(Point p) {
+		this(new Rectangle(p));
+	}
+
+	public Vector2f getVector() {
+		return vector;
+	}
+
+	public Color getColor() {
+		return color;
 	}
 
 	/**
-	 * Verfica se os elementos se tocaram
+	 * Faz um elemento andar com seu vector2f em relacao a Road
 	 *
-	 * @param element
-	 * @return
+	 * @param road
+	 * @return Se o elemento nao esta mais nas coordenadas da rua
 	 */
-//	public boolean colision(Element element) {
-//		return rectangle.intersects(element.getRectangle());
-//	}
+	public boolean move(Road road) {
+		super.translate((int) (vector.x * vector.w), (int) (vector.y * vector.w));
+
+		if (road.contains(getLocation())) {
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
-	 * Verfica se um retangulo esta dentro do outro
+	 * Cada elemento implementa como se renderiza
 	 *
-	 * @param element
-	 * @return
+	 * @param g
 	 */
-//	public boolean inside(Element element) {
-//		return element.getRectangle().contains(rectangle);
-//	}
 	public abstract void render(Graphics g);
 }

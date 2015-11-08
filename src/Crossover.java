@@ -9,22 +9,43 @@ public class Crossover extends Element {
 
 	private Color color;
 
+	/**
+	 *
+	 */
 	public static ArrayList<Crossover> crossovers;
-	private static int delta;
+	private static Vector2f delta;
+
+	/**
+	 *
+	 */
 	public static final int MAX_VEL = 15;
 
-	public Crossover(Rectangle r, Color color) {
-		super(r);
+	/**
+	 *
+	 * @param rectangle
+	 * @param color
+	 */
+	public Crossover(Rectangle rectangle, Color color) {
+		super(rectangle);
 		this.color = color;
 
 		if (crossovers == null) {
 			crossovers = new ArrayList<Crossover>();
-			delta = 0;
+			delta = new Vector2f();
 		}
 	}
 
+	/**
+	 *
+	 * @param point
+	 * @param color
+	 */
 	public Crossover(Point point, Color color) {
 		this(new Rectangle(point, new Dimension(3, 15)), color);
+	}
+
+	public Crossover(Color color) {
+		this(new Point(), color);
 	}
 
 	/**
@@ -36,20 +57,30 @@ public class Crossover extends Element {
 		this.color = color;
 	}
 
-	public static void setDelta(int delta) {
-		int sum = Crossover.delta + delta;
-
-		if (sum >= 0 && sum <= MAX_VEL) {
-			Crossover.delta += delta;
-		}
-	}
-
-	public static int getDelta() {
+	/**
+	 *
+	 * @param delta
+	 */
+//	public void setDelta(int delta) {
+//		delta.translate(0, delta);
+//
+//		if (sum >= 0 && sum <= MAX_VEL) {
+//			Crossover.delta += delta;
+//		}
+//	}
+	/**
+	 *
+	 * @return
+	 */
+	public static Vector2f getDelta() {
 		return delta;
 	}
 
+	/**
+	 *
+	 */
 	public static void stopDelta() {
-		delta = 0;
+		delta.y = 0;
 	}
 
 	/**
@@ -66,14 +97,17 @@ public class Crossover extends Element {
 	 *
 	 * @param limitY qual o limite da rua
 	 */
-	public void move(int limitY) {
-		y += delta;
-
-		if (y - height > limitY) {
-			y = 0;
-		}
-	}
-
+//	public void move(int limitY) {
+//		y += delta.y;
+//
+//		if (y - height > limitY) {
+//			y = 0;
+//		}
+//	}
+	/**
+	 *
+	 * @param g
+	 */
 	@Override
 	public void render(Graphics g) {
 		g.setColor(color);

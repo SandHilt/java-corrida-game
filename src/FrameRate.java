@@ -1,4 +1,9 @@
 
+
+/**
+ *
+ * @author Bruno O
+ */
 public class FrameRate {
 
 	private String frameRate;
@@ -6,16 +11,26 @@ public class FrameRate {
 	private long delta;
 	private int frameCount;
 
-	public void init() {
+    /**
+     *
+     */
+    public void init() {
 		lastTime = System.currentTimeMillis();
 		frameRate = "FPS 0";
 	}
 
-	public boolean is1Sec() {
+    /**
+     *
+     * @return
+     */
+    public boolean is1Sec() {
 		return delta > 1000;
 	}
 
-	public void calculate() {
+    /**
+     *
+     */
+    public void calculate() {
 		long current = System.currentTimeMillis();
 		delta += current - lastTime;
 		lastTime = current;
@@ -28,7 +43,11 @@ public class FrameRate {
 		}
 	}
 
-	public String getFrameRate() {
+    /**
+     *
+     * @return
+     */
+    public String getFrameRate() {
 		return frameRate;
 	}
 }

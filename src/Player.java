@@ -10,14 +10,17 @@ class Player extends Element implements IPlayer {
 
 	private BufferedImage img;
 
-	private int delta; /* Numero de pixels que a imagem eh movida */
+	/* Numero de pixels que a imagem eh movida */
+	private final int dy;
+	/* vida do personagem */
+	private byte life;
+
 	private Direction direction;
 	private int imageIndex;
-	private byte life;
+
 	private volatile boolean gameOver;
 
 	public enum Direction {
-
 		FOWARD,
 		LEFT,
 		RIGHT
@@ -31,10 +34,12 @@ class Player extends Element implements IPlayer {
 			}
 
 			this.imageIndex = imageIndex;
+
 			loadImg("");
 			super.setSize(img.getWidth(), img.getHeight());
+
 			life = 3;
-			delta = 5;
+			dy = 5;
 			direction = Direction.FOWARD;
 			gameOver = false;
 
@@ -43,14 +48,13 @@ class Player extends Element implements IPlayer {
 		}
 	}
 
-	public int getDelta() {
-		return delta;
-	}
-
-	public void setDelta(int delta) {
-		this.delta = delta;
-	}
-
+//	public int getDelta() {
+//		return delta;
+//	}
+//
+//	public void setDelta(int delta) {
+//		this.delta = delta;
+//	}
 	public boolean getGameOver() {
 		return gameOver;
 	}
@@ -75,7 +79,7 @@ class Player extends Element implements IPlayer {
 	 * Carega uma imagem que pode sido rodada
 	 *
 	 * @param imageIndex sufixo da imagem
-	 * @param rotation sufixo da rotacao
+	 * @param rotation sufixo da rotacao que pode ser left ou right
 	 */
 	public void loadImg(String rotation) {
 		if (!"".equals(rotation)) {
@@ -96,10 +100,9 @@ class Player extends Element implements IPlayer {
 	/**
 	 * Se os elementos colidiram, entao para o carro
 	 *
-	 * @param element
+	 * @param enemy
 	 */
 	public void isColision(Enemy enemy) {
-		/* this.colision(enemy) */
 		if (super.intersects(enemy) && enemy.isObstacle()) {
 			Crossover.stopDelta();
 			life--;
@@ -109,17 +112,27 @@ class Player extends Element implements IPlayer {
 
 	@Override
 	public void moveRight() {
-		x += delta;
+		x += dy;
 	}
 
 	@Override
 	public void moveLeft() {
-		x -= delta;
+		x -= dy;
 	}
 
 	@Override
 	public void render(Graphics g) {
-		g.drawImage(img, x, y, null);
+		g.drawImage(img, x, y, new ImageObserver() {
+			@Override
+			public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
+				System.out.println("Passei aqui");
+				if ((infoflags & ALLBITS) != 0) {
+
+					return false;
+				}
+				return true;
+			}
+		});
 	}
 
 	@Override

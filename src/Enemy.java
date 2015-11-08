@@ -8,18 +8,29 @@ public class Enemy extends Element {
 	private BufferedImage img;
 	private boolean obstacle;
 
-	public Enemy(String locationImg) {
-		super(new Point());
+    /**
+     *
+     * @param locationImg
+     */
+    public Enemy(String locationImg) {
+		super();
 		img = JogoCorrida.getImg(locationImg);
 		super.setSize(img.getWidth(), img.getHeight());
 		obstacle = true;
 	}
 
-	public void setObstacle() {
+    /**
+     *
+     */
+    public void setObstacle() {
 		obstacle = false;
 	}
 
-	public boolean isObstacle() {
+    /**
+     *
+     * @return
+     */
+    public boolean isObstacle() {
 		return obstacle;
 	}
 
@@ -58,23 +69,27 @@ public class Enemy extends Element {
 	 *
 	 * @param road Passando a rua como paramero
 	 */
-	public void move(Road road) {
-		int sizeRoadY = road.height;
+//	public void move(Road road) {
+//		int sizeRoadY = road.height;
+//
+//		int delta = Crossover.getDelta();
+//		super.translate(0, delta);
+//
+//		/**
+//		 * Caso o inimigo tenha saido da tela ele vai reaparecer em uma nova posicao
+//		 */
+//		if (y + height > sizeRoadY) {
+//			obstacle = true;
+//			int pos_x = randomPos(road);
+//			super.setLocation(pos_x, 0);
+//		}
+//	}
 
-		int delta = Crossover.getDelta();
-		super.translate(0, delta);
-
-		/**
-		 * Caso o inimigo tenha saido da tela ele vai reaparecer em uma nova posicao
-		 */
-		if (y + height > sizeRoadY) {
-			obstacle = true;
-			int pos_x = randomPos(road);
-			super.setLocation(pos_x, 0);
-		}
-	}
-
-	@Override
+    /**
+     *
+     * @param g
+     */
+    @Override
 	public void render(Graphics g) {
 		g.drawImage(img, x, y, null);
 	}

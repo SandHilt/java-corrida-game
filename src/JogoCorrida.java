@@ -10,9 +10,6 @@ import java.util.*;
 import java.rmi.*;
 import java.rmi.registry.*;
 import java.rmi.server.*;
-import javax.sound.sampled.*;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 
 public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
@@ -26,6 +23,9 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 	private Player p2;
 	private ArrayList<Enemy> enemies;
 
+	/**
+	 *
+	 */
 	public static String relativePath = "./src/";
 
 	private volatile boolean splash;
@@ -34,6 +34,9 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 	Registry reg = null;
 
+	/**
+	 *
+	 */
 	public JogoCorrida() {
 		fr = new FrameRate();
 
@@ -70,6 +73,10 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		System.out.println("Servidor RMI pronto");
 	}
 
+	/**
+	 *
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		final JogoCorrida jogo = new JogoCorrida();
 		jogo.addWindowListener(new WindowAdapter() {
@@ -84,6 +91,9 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		});
 	}
 
+	/**
+	 *
+	 */
 	public void createAndShowGui() {
 		Canvas canvas = new Canvas();
 		canvas.setSize(800, 600);
@@ -151,7 +161,6 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 //
 //					Cenario cenario = Cenario.nextImg();
 //					cenario.render(g);
-
 					render(g);
 
 					/**
@@ -214,42 +223,49 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if(p1.haveLife()){
+		if (p1.haveLife()) {
 			switch (e.getKeyCode()) {
 				case (KeyEvent.VK_RIGHT):
 					if (road.contains(p1)) {
-							p1.moveRight();
-							p1.changeDirection(Player.Direction.RIGHT);
+						p1.moveRight();
+						p1.changeDirection(Player.Direction.RIGHT);
 					} else {
-						p1.x = road.x + road.width - p1.width;
+						p1.x = road.x + road.width - p1.width - p1.getDelta();
 					}
 					break;
 				case (KeyEvent.VK_LEFT):
 					if (road.contains(p1)) {
-							p1.moveLeft();
-							p1.changeDirection(Player.Direction.LEFT);
+						p1.moveLeft();
+						p1.changeDirection(Player.Direction.LEFT);
 					} else {
-						p1.x = road.x;
+						p1.x = road.x + p1.getDelta();
 					}
 					break;
 				case (KeyEvent.VK_UP):
-						Crossover.setDelta(5);
+					Crossover.setDelta(5);
 					break;
 				case (KeyEvent.VK_DOWN):
-						Crossover.setDelta(-5);
+					Crossover.setDelta(-5);
 					break;
 			}
 		}
 	}
 
+	/**
+	 *
+	 * @param file
+	 * @return
+	 */
 	public static BufferedImage getImg(String file) {
 		BufferedImage buffer;
+
 		try {
 			buffer = ImageIO.read(new File(file));
 		} catch (IOException e) {
 			buffer = null;
 			System.out.println("Erro no carregamento da imagem.");
 		}
+
 		return buffer;
 	}
 
@@ -264,6 +280,9 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		g.drawString(fr.getFrameRate(), 300, 20);
 	}
 
+	/**
+	 *
+	 */
 	protected void onWindowClosing() {
 		try {
 			running = false;
