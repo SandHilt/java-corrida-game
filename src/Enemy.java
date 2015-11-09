@@ -8,29 +8,29 @@ public class Enemy extends Element {
 	private BufferedImage img;
 	private boolean obstacle;
 
-    /**
-     *
-     * @param locationImg
-     */
-    public Enemy(String locationImg) {
+	/**
+	 *
+	 * @param locationImg
+	 */
+	public Enemy(String locationImg) {
 		super();
 		img = JogoCorrida.getImg(locationImg);
 		super.setSize(img.getWidth(), img.getHeight());
 		obstacle = true;
 	}
 
-    /**
-     *
-     */
-    public void setObstacle() {
+	/**
+	 *
+	 */
+	public void setObstacle() {
 		obstacle = false;
 	}
 
-    /**
-     *
-     * @return
-     */
-    public boolean isObstacle() {
+	/**
+	 *
+	 * @return
+	 */
+	public boolean isObstacle() {
 		return obstacle;
 	}
 
@@ -51,17 +51,28 @@ public class Enemy extends Element {
 	 * @return
 	 */
 	public int randomPos(Road road, double modificador) {
-		try {
-			Thread.sleep(1);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		JogoCorrida.sleep(1);
+
 		Random r = new Random();
 
 		int pos_x = road.x;
 		int width = (int) (road.width * modificador);
 
 		return pos_x + r.nextInt(width) - width;
+	}
+
+	@Override
+	public boolean move(Road road) {
+
+		if (!super.move(road)) {
+			obstacle = true;
+			//int pos_x = randomPos(road);
+			//super.setLocation(pos_x, 0);
+		} else {
+			System.out.println("eiiita");
+		}
+
+		return false;
 	}
 
 	/**
@@ -84,12 +95,11 @@ public class Enemy extends Element {
 //			super.setLocation(pos_x, 0);
 //		}
 //	}
-
-    /**
-     *
-     * @param g
-     */
-    @Override
+	/**
+	 *
+	 * @param g
+	 */
+	@Override
 	public void render(Graphics g) {
 		g.drawImage(img, x, y, null);
 	}

@@ -24,8 +24,8 @@ class Player extends Element implements IPlayer {
 		RIGHT
 	};
 
-	public Player(Point point, Vector2f vector, int imageIndex) {
-		super(point, vector);
+	public Player(Point point, int imageIndex) {
+		super(point);
 		try {
 			if (imageIndex < 1 || imageIndex > 2) {
 				throw new Exception("Erro no indice da imagem do Player.");
@@ -102,12 +102,12 @@ class Player extends Element implements IPlayer {
 
 	@Override
 	public void moveRight() {
-		x += getVectorX();
+		x += getVel();
 	}
 
 	@Override
 	public void moveLeft() {
-		x -= getVectorX();
+		x -= getVel();
 	}
 
 	@Override

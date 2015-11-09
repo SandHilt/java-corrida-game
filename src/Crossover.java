@@ -20,7 +20,7 @@ public class Crossover extends Element {
 	 * @param color
 	 */
 	public Crossover(Rectangle rectangle, Color color) {
-		super(rectangle, new Vector2f(0, 1));
+		super(rectangle);
 		this.color = color;
 
 		if (crossovers == null) {

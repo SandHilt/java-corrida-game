@@ -10,6 +10,9 @@ import java.util.*;
 import java.rmi.*;
 import java.rmi.registry.*;
 import java.rmi.server.*;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 
 public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
@@ -34,18 +37,23 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 	Registry reg = null;
 
+	AudioPlayer ap;
+
 	/**
 	 *
 	 */
 	public JogoCorrida() {
+
+		ap = new AudioPlayer();
+
 		fr = new FrameRate();
 
 		splash = true;
 
 		road = null;
 
-		p1 = new Player(new Point(250, 500), new Vector2f(10, 0), 1);
-		p2 = new Player(new Point(550, 500), new Vector2f(10, 0), 2);
+		p1 = new Player(new Point(250, 500), 1);
+		p2 = new Player(new Point(550, 500), 2);
 
 		locations = new String[]{JogoCorrida.relativePath + "tree_obst.png", JogoCorrida.relativePath + "stone_obst.png"};
 
@@ -113,10 +121,30 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		gameThread.start();
 	}
 
+	public void play() {
+		Thread soundThread = new Thread() {
+			@Override
+			public void run() {
+				do{
+					try {
+						ap.load(relativePath + "sound/soundtrack.wav");
+						ap.play();
+					} catch (IOException | UnsupportedAudioFileException | LineUnavailableException e) {
+						e.printStackTrace();
+					}
+				}while(true);
+			}
+		};
+
+		soundThread.start();
+
+	}
+
 	@Override
 	public void run() {
 		running = true;
 		fr.init();
+		play();
 
 		while (running) {
 			gameLoop();
@@ -168,7 +196,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					g.drawString("janela:" + toString(), 500, 180);
 					g.drawString("carro_pos:" + p1.getLocation().toString(), 500, 200);
 					g.drawString("carro_tam:" + p1.getSize().toString(), 500, 220);
-					g.drawString("carro_vel:" + p1.getVector(), 500, 240);
+					g.drawString("carro_vel:" + p1.getVel(), 500, 240);
 					g.drawString("crossover_vel:" + Element.getVel() + "/" + Crossover.MAX_VEL, 500, 260);
 
 					if (p1.getGameOver()) {
@@ -184,10 +212,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 						if (enemies == null) {
 							enemies = new ArrayList<Enemy>();
 							for (int i = 0; i < 5; i++) {
-								try {
-									Thread.sleep(1);
-								} catch (InterruptedException e) {
-								}
+								sleep(1);
 								Enemy enemy = new Enemy(locations[new Random().nextInt(2)]);
 								enemy.x = enemy.randomPos(road);
 								enemies.add(enemy);
@@ -215,6 +240,13 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		} while (bs.contentsLost());
 	}
 
+	public static void sleep(long l) {
+		try {
+			Thread.sleep(1);
+		} catch (InterruptedException e) {
+		}
+	}
+
 	@Override
 	public void keyTyped(KeyEvent e) {
 	}
@@ -224,19 +256,19 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		if (p1.haveLife()) {
 			switch (e.getKeyCode()) {
 				case (KeyEvent.VK_RIGHT):
-					if (road.contains(p1.x + p1.getVectorX(), p1.y, p1.width, p1.height)) {
+					if (road.contains(p1.x + Player.getVel(), p1.y, p1.width, p1.height)) {
 						p1.moveRight();
 						p1.changeDirection(Player.Direction.RIGHT);
 					} else {
-						p1.x = road.x + road.width - p1.width - p1.getVectorY();
+						p1.x = road.x + road.width - p1.width;
 					}
 					break;
 				case (KeyEvent.VK_LEFT):
-					if (road.contains(p1.x - p1.getVectorX(), p1.y, p1.width, p1.height)) {
+					if (road.contains(p1.x - Player.getVel(), p1.y, p1.width, p1.height)) {
 						p1.moveLeft();
 						p1.changeDirection(Player.Direction.LEFT);
 					} else {
-						p1.x = road.x + p1.getVectorY();
+						p1.x = road.x;
 					}
 					break;
 				case (KeyEvent.VK_UP):
