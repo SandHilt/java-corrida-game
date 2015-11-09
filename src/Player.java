@@ -16,8 +16,6 @@ class Player extends Element implements IPlayer {
 	private Direction direction;
 	private int imageIndex;
 
-	private volatile boolean gameOver;
-
 	public enum Direction {
 		FOWARD,
 		LEFT,
@@ -38,15 +36,10 @@ class Player extends Element implements IPlayer {
 
 			life = MAX_LIFE;
 			direction = Direction.FOWARD;
-			gameOver = false;
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	public boolean getGameOver() {
-		return gameOver;
 	}
 
 	public byte getLife() {

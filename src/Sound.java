@@ -10,8 +10,11 @@ class Sound {
 
 	private Player soundtrack;
 	private AudioPlayer crash;
+	private Thread loop;
+	private boolean canRun;
 
 	public Sound(String pathSoundTrack, String pathCrash) {
+		this.canRun = true;
 		File file = new File(pathSoundTrack);
 		FileInputStream fis = null;
 		try {
@@ -43,13 +46,18 @@ class Sound {
 		}
 	}
 
+	public void stopSoundTrack() {
+		canRun = false;
+		soundtrack.close();
+	}
+
 	public void playSoundTrackLoop() {
-		Thread loop = new Thread() {
+		loop = new Thread() {
 			@Override
 			public void run() {
 				do {
 					playSoundTrack();
-				} while (true);
+				} while (canRun);
 			}
 		};
 
