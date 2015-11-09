@@ -102,12 +102,12 @@ class Player extends Element implements IPlayer {
 
 	@Override
 	public void moveRight() {
-		x += getVel();
+		x += getVel() + 15;
 	}
 
 	@Override
 	public void moveLeft() {
-		x -= getVel();
+		x -= getVel() + 15;
 	}
 
 	@Override

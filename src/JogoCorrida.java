@@ -13,7 +13,6 @@ import java.rmi.server.*;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-
 public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 	private FrameRate fr;
@@ -38,13 +37,14 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 	Registry reg = null;
 
 	AudioPlayer ap;
+	Sound sounds;
 
 	/**
 	 *
 	 */
 	public JogoCorrida() {
 
-		ap = new AudioPlayer();
+		sounds = new Sound(JogoCorrida.relativePath + "sound/miami.mp3", JogoCorrida.relativePath + "sound/crash.wav");
 
 		fr = new FrameRate();
 
@@ -121,37 +121,16 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		gameThread.start();
 	}
 
-	public void play() {
-		Thread soundThread = new Thread() {
-			@Override
-			public void run() {
-				do{
-					try {
-						ap.load(relativePath + "sound/soundtrack.wav");
-						ap.play();
-					} catch (IOException | UnsupportedAudioFileException | LineUnavailableException e) {
-						e.printStackTrace();
-					}
-				}while(true);
-			}
-		};
-
-		soundThread.start();
-
-	}
-
 	@Override
 	public void run() {
 		running = true;
 		fr.init();
-		play();
+
+		sounds.playSoundTrackLoop();
 
 		while (running) {
 			gameLoop();
-			try {
-				Thread.sleep(15);
-			} catch (InterruptedException ex) {
-			}
+			sleep(15);
 		}
 	}
 
@@ -242,7 +221,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 	public static void sleep(long l) {
 		try {
-			Thread.sleep(1);
+			Thread.sleep(l);
 		} catch (InterruptedException e) {
 		}
 	}

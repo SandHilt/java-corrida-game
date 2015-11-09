@@ -35,43 +35,37 @@ public class Enemy extends Element {
 	}
 
 	/**
-	 * Gera uma posicao randomica em relacao ao eixo X
-	 *
-	 * @param road
-	 * @return uma posicao arbitraria
-	 */
-	public int randomPos(Road road) {
-		return randomPos(road, 1);
-	}
-
-	/**
 	 *
 	 * @param road
 	 * @param modificador
 	 * @return
 	 */
-	public int randomPos(Road road, double modificador) {
+	public int randomPos(Road road) {
 		JogoCorrida.sleep(1);
 
 		Random r = new Random();
 
 		int pos_x = road.x;
-		int width = (int) (road.width * modificador);
 
-		return pos_x + r.nextInt(width) - width;
+		return pos_x + r.nextInt(road.width) - width;
 	}
 
+	/**
+	 * Caso os inimigos tenham chegado no final da tela entao gerara uma nova
+	 * posicao
+	 *
+	 * @param road
+	 * @return
+	 */
 	@Override
 	public boolean move(Road road) {
 
 		if (!super.move(road)) {
 			obstacle = true;
-			//int pos_x = randomPos(road);
-			//super.setLocation(pos_x, 0);
-		} else {
-			System.out.println("eiiita");
+			int pos_x = randomPos(road);
+			super.setLocation(pos_x, 0);
+			return true;
 		}
-
 		return false;
 	}
 
