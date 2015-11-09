@@ -1,5 +1,7 @@
 
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.Player;
@@ -10,11 +12,13 @@ class Sound {
 
 	private Player soundtrack;
 	private AudioPlayer crash;
+	private String pathCrash;
 	private Thread loop;
 	private boolean canRun;
 
 	public Sound(String pathSoundTrack, String pathCrash) {
 		this.canRun = true;
+		this.pathCrash = pathCrash;
 		File file = new File(pathSoundTrack);
 		FileInputStream fis = null;
 		try {
@@ -31,11 +35,6 @@ class Sound {
 		}
 
 		crash = new AudioPlayer();
-		try {
-			crash.load(pathCrash);
-		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-			System.err.println("Nao consegui instanciar o som de crash.");
-		}
 	}
 
 	private void playSoundTrack() {
@@ -68,13 +67,16 @@ class Sound {
 		Thread soundThread = new Thread() {
 			@Override
 			public void run() {
-				do {
-					try {
-						crash.play();
-					} catch (IOException e) {
-						System.err.println("Erro na hora de dar play no crash");
-					}
-				} while (true);
+				try {
+					crash.load(pathCrash);
+				} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+					System.err.println("Nao consegui instanciar o som de crash.");
+				}
+				try {
+					crash.play();
+				} catch (IOException e) {
+					System.err.println("Erro no arquivo de crash.");
+				}
 			}
 		};
 

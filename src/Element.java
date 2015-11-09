@@ -4,10 +4,10 @@ import java.awt.*;
 /**
  * Classe abstrata para tratar todos os elementos da tela
  */
-public abstract class Element extends Rectangle {
+public abstract class Element extends Rectangle  {
 
 	private static int vel = 0;
-	public static final int MAX_VEL = 15;
+	public static final int MAX_VEL = 100;
 	private Color color;
 
 	public Element() {

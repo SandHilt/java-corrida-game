@@ -16,6 +16,8 @@ class Player extends Element implements IPlayer {
 	private Direction direction;
 	private int imageIndex;
 
+
+
 	public enum Direction {
 		FOWARD,
 		LEFT,
@@ -46,6 +48,7 @@ class Player extends Element implements IPlayer {
 		return life;
 	}
 
+	@Override
 	public boolean haveLife() {
 		return life > 0;
 	}
@@ -68,7 +71,7 @@ class Player extends Element implements IPlayer {
 	 * @param imageIndex sufixo da imagem
 	 * @param rotation sufixo da rotacao que pode ser left ou right
 	 */
-	public void loadImg(String rotation) {
+	private void loadImg(String rotation) {
 		if (!"".equals(rotation)) {
 			rotation = "_" + rotation;
 		}
@@ -89,22 +92,28 @@ class Player extends Element implements IPlayer {
 	 *
 	 * @param enemy
 	 */
-	public void isColision(Enemy enemy) {
+	public boolean isColision(Enemy enemy, Sound crash) {
 		if (super.intersects(enemy) && enemy.isObstacle()) {
 			Element.stopVel();
 			life--;
 			enemy.setObstacle();
+			crash.playCrash();
+			return true;
 		}
+
+		return false;
 	}
 
 	@Override
 	public void moveRight() {
 		x += getVel() + 15;
+		changeDirection(Direction.RIGHT);
 	}
 
 	@Override
 	public void moveLeft() {
 		x -= getVel() + 15;
+		changeDirection(Direction.LEFT);
 	}
 
 	@Override

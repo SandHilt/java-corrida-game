@@ -6,7 +6,7 @@ import java.util.*;
 public class Enemy extends Element {
 
 	private BufferedImage img;
-	private boolean obstacle;
+	private static boolean obstacle;
 
 	/**
 	 *
@@ -41,11 +41,9 @@ public class Enemy extends Element {
 	 * @return
 	 */
 	public int randomPos(Road road) {
-		JogoCorrida.sleep(1);
-
 		int pos_x = road.x;
 
-		Random r = new Random(System.currentTimeMillis());
+		Random r = new Random();
 
 		return pos_x + r.nextInt(road.width) - width;
 	}
@@ -57,7 +55,6 @@ public class Enemy extends Element {
 	 * @param road
 	 * @return
 	 */
-	@Override
 	public boolean move(Road road) {
 
 		if (!super.move(road)) {

@@ -5,19 +5,26 @@ import java.util.*;
 
 public class Cenario extends Element {
 
-	public static ArrayList<Cenario> objects;
-	public static boolean isSuficient;
+	private static ArrayList<Cenario> objects;
 	private BufferedImage img;
+	private Direction direction;
 
-	private enum Direction {
+	public enum Direction {
 		LEFT,
 		RIGHT
 	};
 
-	public Cenario(Point point, BufferedImage img) {
-		super(point);
+	public Cenario(Point p, BufferedImage img) {
+		super(new Rectangle(p.x, p.y, img.getWidth(), img.getHeight()));
 		this.img = img;
-		isSuficient = false;
+	}
+
+	public Direction getDirection() {
+		return direction;
+	}
+
+	public void setDirection(Direction direction) {
+		this.direction = direction;
 	}
 
 	/**
@@ -27,8 +34,7 @@ public class Cenario extends Element {
 	public static Cenario nextImg() {
 		try {
 			if (objects != null) {
-				Random r = new Random(System.currentTimeMillis());
-
+				Random r = new Random();
 				return objects.get(r.nextInt(objects.size()));
 			} else {
 				throw new Exception("Imagens ainda nao foram carregadas.");
@@ -42,30 +48,13 @@ public class Cenario extends Element {
 	/**
 	 *
 	 * @param road
-	 */
-//	public void move(Road road) {
-//		int sizeRoadY = road.height;
-//
-//		int delta = Crossover.getDelta();
-//		super.translate(0, delta);
-//
-//		/**
-//		 * Caso o cenario tenha saido da tela ele vai chamar outro elemento
-//		 */
-//		if (y + height > sizeRoadY) {
-//
-//		}
-//	}
-	/**
-	 *
-	 * @param road
 	 * @param window
 	 */
 	public static void loadImg(Road road, int window) {
 		if (objects == null) {
 			objects = new ArrayList<Cenario>();
 
-			Direction dir = Direction.LEFT;
+			Direction nextDirection = Direction.LEFT;
 
 			for (int i = 0; i < 16; i++) {
 				BufferedImage img = JogoCorrida.getImg(JogoCorrida.relativePath + "sprites/" + i + ".png");
@@ -75,17 +64,21 @@ public class Cenario extends Element {
 				try {
 					int left = r.nextInt(road.x - img.getWidth() / 2);
 					int right = road.x + road.width + left;
-					int pos;
+					int pos_x;
 
-					if (dir == Direction.LEFT) {
-						pos = left;
-						dir = Direction.RIGHT;
+					Direction actualDirection = nextDirection;
+
+					if (nextDirection == Direction.LEFT) {
+						pos_x = left;
+						nextDirection = Direction.RIGHT;
 					} else {
-						pos = right;
-						dir = Direction.LEFT;
+						pos_x = right;
+						nextDirection = Direction.LEFT;
 					}
 
-					Cenario cenario = new Cenario(new Point(pos, 0), img);
+					Cenario cenario = new Cenario(new Point(pos_x, 0), img);
+					cenario.setDirection(actualDirection);
+
 					objects.add(cenario);
 				} catch (Exception e) {
 					System.out.println("Imagem grande.");
@@ -100,7 +93,7 @@ public class Cenario extends Element {
 	 */
 	@Override
 	public void render(Graphics g) {
-		g.drawImage(img, x, y, null);
+		g.drawImage(img, x, y - img.getHeight(), null);
 	}
 
 }

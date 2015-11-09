@@ -28,17 +28,35 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 	private Player p1;
 	private Player p2;
 	private ArrayList<Enemy> enemies;
-	private boolean haveCenario;
+	private int numberCenario;
+	private Cenario cenario;
 
 	private static Map<String, BufferedImage> bufferImages;
 
 	public static String relativePath = "./src/";
+	private Canvas canvas;
+
+	public enum Tempo {
+
+		NEVE(new Color(254, 254, 250)),
+		FLORESTA(new Color(1, 68, 33)),
+		CIDADE(new Color(51, 51, 51)),
+		DESERTO(new Color(237, 201, 175));
+
+		private final Color cor;
+
+		Tempo(Color cor) {
+			this.cor = cor;
+		}
+
+	};
 
 	private volatile boolean splash;
 	private Timer timerSplash;
 	private int timerSplashDelay = 1000;
 	private int timerSplashFlick = 300;
 	private volatile boolean splashPressEnter;
+	private Road janela;
 
 	private long quilometros = 50;
 
@@ -52,10 +70,10 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 	Sound sounds;
 
 	/**
-	 *
+	 * Classe principal do jogo
 	 */
 	public JogoCorrida() {
-		this.haveCenario = false;
+		numberCenario = 0;
 
 		fr = new FrameRate();
 
@@ -128,7 +146,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 	 *
 	 */
 	public void createAndShowGui() {
-		Canvas canvas = new Canvas();
+		canvas = new Canvas();
 		canvas.setSize(800, 600);
 		canvas.setBackground(new Color(1, 68, 33));
 		canvas.setIgnoreRepaint(true);
@@ -154,6 +172,8 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		fr.init();
 
 		sounds.playSoundTrackLoop();
+
+		janela = new Road(new Rectangle(0, 0, getWidth(), getHeight()));
 
 		while (running) {
 			gameLoop();
@@ -210,17 +230,20 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 						road.render(g);
 
-						if (!haveCenario) {
-							haveCenario = true;
+						if (numberCenario++ < 1) {
 							Cenario.loadImg(road, getWidth());
-
-							Random r = new Random(System.currentTimeMillis());
-
-							Cenario cenario = Cenario.nextImg();
-							cenario.render(g);
+							cenario = Cenario.nextImg();
 						}
 
-						render(g);
+//						System.out.println(cenario.toString());
+
+						cenario.render(g);
+
+						if (!cenario.move(janela)) {
+							numberCenario = 0;
+						}
+
+//						render(g);
 
 						p1.render(g);
 //						p2.render(g);
@@ -231,9 +254,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 						if (enemies == null) {
 							enemies = new ArrayList<Enemy>();
 							for (int i = 0; i < 5; i++) {
-								sleep(1);
-								Random r = new Random(System.currentTimeMillis());
-								Enemy enemy = new Enemy(imageEnemies[r.nextInt(2)]);
+								Enemy enemy = new Enemy(imageEnemies[new Random().nextInt(2)]);
 								enemy.x = enemy.randomPos(road);
 								enemies.add(enemy);
 							}
@@ -250,7 +271,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 								enemies = null;
 								break;
 							} else {
-								p1.isColision(enemy);
+								p1.isColision(enemy, sounds);
 							}
 						}
 
@@ -306,7 +327,6 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 				case (KeyEvent.VK_RIGHT):
 					if (road.contains(p1.x + Player.getVel(), p1.y, p1.width, p1.height)) {
 						p1.moveRight();
-						p1.changeDirection(Player.Direction.RIGHT);
 					} else {
 						p1.x = road.x + road.width - p1.width;
 					}
@@ -314,7 +334,6 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 				case (KeyEvent.VK_LEFT):
 					if (road.contains(p1.x - Player.getVel(), p1.y, p1.width, p1.height)) {
 						p1.moveLeft();
-						p1.changeDirection(Player.Direction.LEFT);
 					} else {
 						p1.x = road.x;
 					}
@@ -324,8 +343,16 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 						splash = false;
 					}
 					break;
+				case (KeyEvent.VK_UP):
+					Element.setVel(5);
+					break;
 			}
 		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		p1.changeDirection(Player.Direction.FOWARD);
 	}
 
 	public static BufferedImage getImg(String file) {
@@ -346,11 +373,6 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		}
 
 		return buffer;
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		p1.changeDirection(Player.Direction.FOWARD);
 	}
 
 	private void render(Graphics g) {
