@@ -12,7 +12,7 @@ class Player extends Element implements IPlayer {
 
 	/* vida do personagem */
 	private byte life;
-
+	public static final byte MAX_LIFE = 3;
 	private Direction direction;
 	private int imageIndex;
 
@@ -36,7 +36,7 @@ class Player extends Element implements IPlayer {
 			loadImg("");
 			super.setSize(img.getWidth(), img.getHeight());
 
-			life = 3;
+			life = MAX_LIFE;
 			direction = Direction.FOWARD;
 			gameOver = false;
 
@@ -47,6 +47,10 @@ class Player extends Element implements IPlayer {
 
 	public boolean getGameOver() {
 		return gameOver;
+	}
+
+	public byte getLife() {
+		return life;
 	}
 
 	public boolean haveLife() {

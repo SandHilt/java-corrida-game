@@ -52,7 +52,7 @@ public abstract class Element extends Rectangle {
 	}
 
 	/**
-	 * Faz um elemento andar com seu vector2f em relacao a Road
+	 * Faz um elemento andar em relacao a Road
 	 *
 	 * @param road
 	 * @return Se o elemento nao esta mais nas coordenadas da rua

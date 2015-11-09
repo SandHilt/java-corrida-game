@@ -6,11 +6,18 @@ import java.util.*;
 public class Cenario extends Element {
 
 	public static ArrayList<Cenario> objects;
+	public static boolean isSuficient;
 	private BufferedImage img;
 
+	private enum Direction {
+		LEFT,
+		RIGHT
+	};
+
 	public Cenario(Point point, BufferedImage img) {
-		super(point, new Vector2f(0, 5));
+		super(point);
 		this.img = img;
+		isSuficient = false;
 	}
 
 	/**
@@ -21,6 +28,7 @@ public class Cenario extends Element {
 		try {
 			if (objects != null) {
 				Random r = new Random(System.currentTimeMillis());
+
 				return objects.get(r.nextInt(objects.size()));
 			} else {
 				throw new Exception("Imagens ainda nao foram carregadas.");
@@ -48,33 +56,34 @@ public class Cenario extends Element {
 //
 //		}
 //	}
-
 	/**
 	 *
 	 * @param road
-	 * @param Janela
+	 * @param window
 	 */
-	public static void loadImg(Road road, int Janela) {
+	public static void loadImg(Road road, int window) {
 		if (objects == null) {
 			objects = new ArrayList<Cenario>();
 
-			int pos = 0;
+			Direction dir = Direction.LEFT;
 
 			for (int i = 0; i < 16; i++) {
 				BufferedImage img = JogoCorrida.getImg(JogoCorrida.relativePath + "sprites/" + i + ".png");
-				Random r = new Random(System.currentTimeMillis() + i);
+
+				Random r = new Random(System.currentTimeMillis());
 
 				try {
 					int left = r.nextInt(road.x - img.getWidth() / 2);
 					int right = road.x + road.width + left;
+					int pos;
 
-					if (pos == 0) {
+					if (dir == Direction.LEFT) {
 						pos = left;
+						dir = Direction.RIGHT;
 					} else {
 						pos = right;
+						dir = Direction.LEFT;
 					}
-
-					pos = ++pos % 2;
 
 					Cenario cenario = new Cenario(new Point(pos, 0), img);
 					objects.add(cenario);

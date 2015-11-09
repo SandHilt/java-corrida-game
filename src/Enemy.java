@@ -43,9 +43,9 @@ public class Enemy extends Element {
 	public int randomPos(Road road) {
 		JogoCorrida.sleep(1);
 
-		Random r = new Random();
-
 		int pos_x = road.x;
+
+		Random r = new Random(System.currentTimeMillis());
 
 		return pos_x + r.nextInt(road.width) - width;
 	}
