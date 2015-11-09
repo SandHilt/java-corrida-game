@@ -13,12 +13,6 @@ public class Crossover extends Element {
 	 *
 	 */
 	public static ArrayList<Crossover> crossovers;
-	private static Vector2f delta;
-
-	/**
-	 *
-	 */
-	public static final int MAX_VEL = 15;
 
 	/**
 	 *
@@ -26,12 +20,11 @@ public class Crossover extends Element {
 	 * @param color
 	 */
 	public Crossover(Rectangle rectangle, Color color) {
-		super(rectangle);
+		super(rectangle, new Vector2f(0, 1));
 		this.color = color;
 
 		if (crossovers == null) {
 			crossovers = new ArrayList<Crossover>();
-			delta = new Vector2f();
 		}
 	}
 
@@ -57,53 +50,10 @@ public class Crossover extends Element {
 		this.color = color;
 	}
 
-	/**
-	 *
-	 * @param delta
-	 */
-//	public void setDelta(int delta) {
-//		delta.translate(0, delta);
-//
-//		if (sum >= 0 && sum <= MAX_VEL) {
-//			Crossover.delta += delta;
-//		}
-//	}
-	/**
-	 *
-	 * @return
-	 */
-	public static Vector2f getDelta() {
-		return delta;
-	}
-
-	/**
-	 *
-	 */
-	public static void stopDelta() {
-		delta.y = 0;
-	}
-
-	/**
-	 * Margem entre cada faixa
-	 *
-	 * @param i
-	 */
 	public void nextCrossover(int i) {
 		y += height * 5 * i;
 	}
 
-	/**
-	 * Responsavel por fazer a animacao das faixas
-	 *
-	 * @param limitY qual o limite da rua
-	 */
-//	public void move(int limitY) {
-//		y += delta.y;
-//
-//		if (y - height > limitY) {
-//			y = 0;
-//		}
-//	}
 	/**
 	 *
 	 * @param g

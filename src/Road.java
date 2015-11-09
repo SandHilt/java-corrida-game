@@ -46,7 +46,11 @@ public class Road extends Element {
 		 */
 		for (Crossover crossover : Crossover.crossovers) {
 			crossover.x = x + (width / 2);
-//			crossover.move(height);
+
+			if (!crossover.move(this)) {
+				crossover.y = 0;
+			}
+
 			crossover.render(g);
 		}
 

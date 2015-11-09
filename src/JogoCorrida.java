@@ -44,10 +44,8 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 		road = null;
 
-		p1 = new Player(new Point(250, 500), 1);
-		p1.setDelta(10);
-
-		p2 = new Player(new Point(550, 500), 2);
+		p1 = new Player(new Point(250, 500), new Vector2f(10, 0), 1);
+		p2 = new Player(new Point(550, 500), new Vector2f(10, 0), 2);
 
 		locations = new String[]{JogoCorrida.relativePath + "tree_obst.png", JogoCorrida.relativePath + "stone_obst.png"};
 
@@ -170,8 +168,8 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					g.drawString("janela:" + toString(), 500, 180);
 					g.drawString("carro_pos:" + p1.getLocation().toString(), 500, 200);
 					g.drawString("carro_tam:" + p1.getSize().toString(), 500, 220);
-					g.drawString("carro_vel:" + p1.getDelta(), 500, 240);
-					g.drawString("crossover_vel:" + Crossover.getDelta() + "/" + Crossover.MAX_VEL, 500, 260);
+					g.drawString("carro_vel:" + p1.getVector(), 500, 240);
+					g.drawString("crossover_vel:" + Element.getVel() + "/" + Crossover.MAX_VEL, 500, 260);
 
 					if (p1.getGameOver()) {
 						p1.gameOver(g, new Point(getWidth() / 2, getHeight() / 2));
@@ -226,26 +224,26 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		if (p1.haveLife()) {
 			switch (e.getKeyCode()) {
 				case (KeyEvent.VK_RIGHT):
-					if (road.contains(p1)) {
+					if (road.contains(p1.x + p1.getVectorX(), p1.y, p1.width, p1.height)) {
 						p1.moveRight();
 						p1.changeDirection(Player.Direction.RIGHT);
 					} else {
-						p1.x = road.x + road.width - p1.width - p1.getDelta();
+						p1.x = road.x + road.width - p1.width - p1.getVectorY();
 					}
 					break;
 				case (KeyEvent.VK_LEFT):
-					if (road.contains(p1)) {
+					if (road.contains(p1.x - p1.getVectorX(), p1.y, p1.width, p1.height)) {
 						p1.moveLeft();
 						p1.changeDirection(Player.Direction.LEFT);
 					} else {
-						p1.x = road.x + p1.getDelta();
+						p1.x = road.x + p1.getVectorY();
 					}
 					break;
 				case (KeyEvent.VK_UP):
-					Crossover.setDelta(5);
+					Element.setVel(5);
 					break;
 				case (KeyEvent.VK_DOWN):
-					Crossover.setDelta(-5);
+					Element.setVel(-5);
 					break;
 			}
 		}

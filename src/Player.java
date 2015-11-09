@@ -10,8 +10,6 @@ class Player extends Element implements IPlayer {
 
 	private BufferedImage img;
 
-	/* Numero de pixels que a imagem eh movida */
-	private final int dy;
 	/* vida do personagem */
 	private byte life;
 
@@ -26,8 +24,8 @@ class Player extends Element implements IPlayer {
 		RIGHT
 	};
 
-	public Player(Point point, int imageIndex) {
-		super(point);
+	public Player(Point point, Vector2f vector, int imageIndex) {
+		super(point, vector);
 		try {
 			if (imageIndex < 1 || imageIndex > 2) {
 				throw new Exception("Erro no indice da imagem do Player.");
@@ -39,7 +37,6 @@ class Player extends Element implements IPlayer {
 			super.setSize(img.getWidth(), img.getHeight());
 
 			life = 3;
-			dy = 5;
 			direction = Direction.FOWARD;
 			gameOver = false;
 
@@ -48,13 +45,6 @@ class Player extends Element implements IPlayer {
 		}
 	}
 
-//	public int getDelta() {
-//		return delta;
-//	}
-//
-//	public void setDelta(int delta) {
-//		this.delta = delta;
-//	}
 	public boolean getGameOver() {
 		return gameOver;
 	}
@@ -104,7 +94,7 @@ class Player extends Element implements IPlayer {
 	 */
 	public void isColision(Enemy enemy) {
 		if (super.intersects(enemy) && enemy.isObstacle()) {
-			Crossover.stopDelta();
+			Element.stopVel();
 			life--;
 			enemy.setObstacle();
 		}
@@ -112,27 +102,17 @@ class Player extends Element implements IPlayer {
 
 	@Override
 	public void moveRight() {
-		x += dy;
+		x += getVectorX();
 	}
 
 	@Override
 	public void moveLeft() {
-		x -= dy;
+		x -= getVectorX();
 	}
 
 	@Override
 	public void render(Graphics g) {
-		g.drawImage(img, x, y, new ImageObserver() {
-			@Override
-			public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
-				System.out.println("Passei aqui");
-				if ((infoflags & ALLBITS) != 0) {
-
-					return false;
-				}
-				return true;
-			}
-		});
+		g.drawImage(img, x, y, null);
 	}
 
 	@Override

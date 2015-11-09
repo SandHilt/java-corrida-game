@@ -9,7 +9,7 @@ public class Cenario extends Element {
 	private BufferedImage img;
 
 	public Cenario(Point point, BufferedImage img) {
-		super(point, new Vector2f(0, Crossover.getDelta()));
+		super(point, new Vector2f(0, 5));
 		this.img = img;
 	}
 
