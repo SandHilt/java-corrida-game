@@ -3,26 +3,54 @@ import java.awt.*;
 import java.awt.image.*;
 import java.util.*;
 
+/**
+ *
+ * @author Bruno O
+ */
 public class Cenario extends Element {
 
 	private static ArrayList<Cenario> objects;
 	private BufferedImage img;
 	private Direction direction;
 
+	/**
+	 *
+	 */
 	public enum Direction {
+
+		/**
+		 *
+		 */
 		LEFT,
+
+		/**
+		 *
+		 */
 		RIGHT
 	};
 
+	/**
+	 *
+	 * @param p
+	 * @param img
+	 */
 	public Cenario(Point p, BufferedImage img) {
 		super(new Rectangle(p.x, p.y, img.getWidth(), img.getHeight()));
 		this.img = img;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public Direction getDirection() {
 		return direction;
 	}
 
+	/**
+	 *
+	 * @param direction
+	 */
 	public void setDirection(Direction direction) {
 		this.direction = direction;
 	}

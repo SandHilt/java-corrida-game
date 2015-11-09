@@ -3,10 +3,19 @@ import java.awt.*;
 
 /**
  *
- * @author Bruno O
  */
 public class Road extends Element {
 
+	public Road(int x, int y, int w, int h) {
+		super(new Rectangle(x, y, w, h));
+	}
+
+	/**
+	 *
+	 * @param rectangle
+	 * @param roadColor
+	 * @param crossoverColor
+	 */
 	public Road(Rectangle rectangle, Color roadColor, Color crossoverColor) {
 		super(rectangle, roadColor);
 
@@ -21,6 +30,11 @@ public class Road extends Element {
 		}
 	}
 
+	/**
+	 *
+	 * @param rectangle
+	 * @param roadColor
+	 */
 	public Road(Rectangle rectangle, Color roadColor) {
 		this(rectangle, roadColor, Color.WHITE);
 	}

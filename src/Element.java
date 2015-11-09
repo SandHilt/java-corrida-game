@@ -7,32 +7,60 @@ import java.awt.*;
 public abstract class Element extends Rectangle  {
 
 	private static int vel = 0;
+
+	/**
+	 *
+	 */
 	public static final int MAX_VEL = 100;
 	private Color color;
 
+	/**
+	 *
+	 */
 	public Element() {
 		super();
 		color = Color.WHITE;
 	}
 
+	/**
+	 *
+	 * @param rectangle
+	 */
 	public Element(Rectangle rectangle) {
 		super(rectangle);
 		color = Color.WHITE;
 	}
 
+	/**
+	 *
+	 * @param rectangle
+	 * @param color
+	 */
 	public Element(Rectangle rectangle, Color color) {
 		this(rectangle);
 		this.color = color;
 	}
 
+	/**
+	 *
+	 * @param point
+	 */
 	public Element(Point point) {
 		this(new Rectangle(point));
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public static int getVel() {
 		return vel;
 	}
 
+	/**
+	 *
+	 * @param vel
+	 */
 	public static void setVel(int vel) {
 		int dx = Element.vel + vel;
 		if (dx <= Element.MAX_VEL && dx >= 0) {
@@ -40,13 +68,19 @@ public abstract class Element extends Rectangle  {
 		}
 	}
 
+	/**
+	 *
+	 */
 	public static void stopVel() {
 		if (Element.vel != 0) {
 			Element.vel = 0;
 		}
 	}
 
-
+	/**
+	 *
+	 * @return
+	 */
 	public Color getColor() {
 		return color;
 	}

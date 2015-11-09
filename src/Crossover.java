@@ -37,6 +37,10 @@ public class Crossover extends Element {
 		this(new Rectangle(point, new Dimension(3, 15)), color);
 	}
 
+	/**
+	 *
+	 * @param color
+	 */
 	public Crossover(Color color) {
 		this(new Point(), color);
 	}
@@ -50,6 +54,10 @@ public class Crossover extends Element {
 		this.color = color;
 	}
 
+	/**
+	 *
+	 * @param i
+	 */
 	public void nextCrossover(int i) {
 		y += height * 5 * i;
 	}

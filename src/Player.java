@@ -16,8 +16,6 @@ class Player extends Element implements IPlayer {
 	private Direction direction;
 	private int imageIndex;
 
-
-
 	public enum Direction {
 		FOWARD,
 		LEFT,
@@ -105,6 +103,11 @@ class Player extends Element implements IPlayer {
 	}
 
 	@Override
+	public Rectangle getBoundPlayer() {
+		return getBounds();
+	}
+
+	@Override
 	public void moveRight() {
 		x += getVel() + 15;
 		changeDirection(Direction.RIGHT);
@@ -119,11 +122,6 @@ class Player extends Element implements IPlayer {
 	@Override
 	public void render(Graphics g) {
 		g.drawImage(img, x, y, null);
-	}
-
-	@Override
-	public Point getPoint() throws RemoteException {
-		return new Point(x, y);
 	}
 
 }

@@ -3,6 +3,10 @@ import java.awt.*;
 import java.awt.image.*;
 import java.util.*;
 
+/**
+ *
+ * @author Bruno O
+ */
 public class Enemy extends Element {
 
 	private BufferedImage img;
@@ -37,7 +41,6 @@ public class Enemy extends Element {
 	/**
 	 *
 	 * @param road
-	 * @param modificador
 	 * @return
 	 */
 	public int randomPos(Road road) {
