@@ -47,12 +47,7 @@ public class Road extends Element {
 		this(rectangle, new Color(51, 51, 51));
 	}
 
-	/**
-	 *
-	 * @param g
-	 */
-	@Override
-	public void render(Graphics g) {
+	public void render(Graphics g, Player p) {
 		g.fillRect(x, y, width, height);
 
 		/**
@@ -61,12 +56,18 @@ public class Road extends Element {
 		for (Crossover crossover : Crossover.crossovers) {
 			crossover.x = x + (width / 2);
 
-			if (!crossover.move(this)) {
+			if (!crossover.move(this, p)) {
 				crossover.y = 0;
 			}
 
 			crossover.render(g);
 		}
-
 	}
+
+	/**
+	 *
+	 * @param g
+	 */
+	@Override
+	public void render(Graphics g) {	}
 }

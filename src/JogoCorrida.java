@@ -21,7 +21,7 @@ import java.util.HashMap;
  *
  * @author Bruno O
  */
-public class JogoCorrida extends JFrame implements Runnable, KeyListener {
+public class JogoCorrida extends JFrame implements Runnable, IJogo {
 
 	private FrameRate fr;
 	private BufferStrategy bs;
@@ -38,34 +38,48 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 	private static Map<String, BufferedImage> bufferImages;
 
 	/**
-	 *
+	 * Pasta relativa para pegar os recursos
 	 */
 	public static String relativePath = "./src/";
-	private Canvas canvas;
 
 	/**
-	 *
+	 * Pegando o canvas para pinta-lo posteriormente
+	 */
+	private Canvas canvas;
+
+	@Override
+	public Cenario getCenario() throws RemoteException {
+		return cenario;
+	}
+
+	@Override
+	public ArrayList<Enemy> getEnemies() throws RemoteException {
+		return enemies;
+	}
+
+	/**
+	 * Enumeravel para pintar o cenario
 	 */
 	public enum Tempo {
 
 		/**
-		 *
+		 * Snow
 		 */
 		NEVE(new Color(254, 254, 250)),
 		/**
-		 *
+		 * Florest
 		 */
 		FLORESTA(new Color(1, 68, 33)),
 		/**
-		 *
+		 * Big City
 		 */
 		CIDADE(new Color(51, 51, 51)),
 		/**
-		 *
+		 * Waterless
 		 */
 		DESERTO(new Color(237, 201, 175));
 
-		private final Color cor;
+		final Color cor;
 
 		Tempo(Color cor) {
 			this.cor = cor;
@@ -73,15 +87,7 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 	};
 
-	private volatile boolean splash;
-	private Timer timerSplash;
-	/**
-	 * Tempo que o Press Enter flicka ( pisca ) em relacao a um delay
-	 */
-	private int timerSplashDelay = 1000;
-	private int timerSplashFlick = 300;
-	private volatile boolean splashPressEnter;
-	private Timer timerVel;
+//	private Timer timerVel;
 	private String[] imageEnemies;
 
 	/**
@@ -96,12 +102,14 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 	/**
 	 * Classe principal do jogo
+	 *
+	 * @param p1
+	 * @param p2
 	 */
 	public JogoCorrida() {
 		numberCenario = 0;
 
-		fr = new FrameRate();
-
+//		fr = new FrameRate();
 		/**
 		 * Para otimizar as imagens Usando a string com o caminho das imagens E o
 		 * buffer delas
@@ -117,18 +125,10 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		 * Instanciando o jogador
 		 */
 		p1 = new Player(new Point(250, 500), 1);
-//		p2 = new Player(new Point(550, 500), 2);
+		p2 = new Player(new Point(550, 500), 2);
 
 		/**
-		 * Habilitando a Splash Screen
-		 */
-		splash = true;
-		/**
-		 * Iniciando com a String Press Enter ligado
-		 */
-		splashPressEnter = true;
-		/**
-		 * Array com localizacao dos inimigos
+		 * Array com localizacao da imagem dos inimigos
 		 */
 		imageEnemies = new String[]{JogoCorrida.relativePath + "tree_obst.png", JogoCorrida.relativePath + "stone_obst.png"};
 		/**
@@ -137,29 +137,18 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		sounds = new Sound(JogoCorrida.relativePath + "sound/miami.mp3", JogoCorrida.relativePath + "sound/crash.wav");
 
 		/**
-		 * Temporizador para a splash apagar o Press Enter
+		 * Temporazidor para velocidade
 		 */
-		timerSplash = new Timer(timerSplashDelay, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				splashPressEnter = false;
-			}
-		});
+		p1.setTimer(timerVel(p1));
+		p2.setTimer(timerVel(p2));
 
-		/**
-		 * Temporazidor de velocidade
-		 */
-		timerVel = new Timer(3000, new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (p1.haveLife()) {
-					Element.setVel(1);
-				} else {
-					sounds.stopSoundTrack();
-				}
-			}
-		});
+		rmi();
+	}
 
+	/**
+	 * RMI
+	 */
+	private void rmi() {
 		try {
 			reg = LocateRegistry.createRegistry(1099);
 		} catch (RemoteException e) {
@@ -167,12 +156,16 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		}
 
 		try {
-			IPlayer stub = (IPlayer) UnicastRemoteObject.exportObject(p1, 6789);
+			IPlayer stubPlayer1 = (IPlayer) UnicastRemoteObject.exportObject(p1, 6789);
+			IPlayer stubPlayer2 = (IPlayer) UnicastRemoteObject.exportObject(p2, 6790);
+			IJogo stubJogo = (IJogo) UnicastRemoteObject.exportObject(this, 6791);
 
 			try {
-				reg.bind("Player1", stub);
+				reg.bind("Player1", stubPlayer1);
+				reg.bind("Player2", stubPlayer2);
+				reg.bind("Cenario", stubJogo);
 			} catch (RemoteException | AlreadyBoundException e) {
-				System.err.println("Nao consigo bindar Player1 ao registro");
+				System.err.println("Nao consigo bindar o Player ao registro");
 			}
 
 		} catch (RemoteException e) {
@@ -183,11 +176,14 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 	}
 
 	/**
+	 * Adicionando um escutador de eventos para quando a janela fechar e chamando
+	 * createAndShowGui quando o jogo puder ser chamado.
 	 *
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		final JogoCorrida jogo = new JogoCorrida();
+
 		jogo.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				jogo.onWindowClosing();
@@ -201,12 +197,12 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 	}
 
 	/**
-	 *
+	 * Criando o canvas
 	 */
 	public void createAndShowGui() {
 		canvas = new Canvas();
 		canvas.setSize(800, 600);
-		canvas.setBackground(new Color(1, 68, 33));
+		canvas.setBackground(Tempo.FLORESTA.cor);
 		canvas.setIgnoreRepaint(true);
 		getContentPane().add(canvas);
 		setTitle("The Need Velocity Run");
@@ -218,18 +214,18 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		canvas.createBufferStrategy(2);
 		bs = canvas.getBufferStrategy();
 
-		canvas.addKeyListener(this);
-
 		gameThread = new Thread(this);
 		gameThread.start();
 	}
 
+	/**
+	 * Rodando o jogo
+	 */
 	@Override
 	public void run() {
 		running = true;
-		fr.init();
 
-		sounds.playSoundTrackLoop();
+//		sounds.playSoundTrackLoop();
 
 		while (running) {
 			gameLoop();
@@ -237,11 +233,9 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		}
 	}
 
-	@Override
-	public String toString() {
-		return getWidth() + "x" + getHeight();
-	}
-
+	/**
+	 * Loop do jogo
+	 */
 	private void gameLoop() {
 		do {
 			do {
@@ -250,37 +244,11 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 					g = bs.getDrawGraphics();
 					g.clearRect(0, 0, getWidth(), getHeight());
 
-					if (splash) {
-
+					if (!p1.isConnected() && !p2.isConnected()) {
 						g.drawImage(getImg(relativePath + "splash.jpg"), 0, 0, null);
-
-						g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 72));
-						g.setColor(Color.WHITE);
-
-						if (splashPressEnter) {
-							g.drawString("PRESS ENTER", 150, 500);
-						} else {
-							/**
-							 * Adicionando um temporizador para piscar o Press Enter
-							 */
-							timer(timerSplashDelay + timerSplashFlick, new ActionListener() {
-								@Override
-								public void actionPerformed(ActionEvent e) {
-									splashPressEnter = true;
-								}
-							});
-						}
-
-						timerSplash.start();
 					} else {
-
-						/**
-						 * Verficando se o Press Enter esta rodando se rodar, para de rodar.
-						 */
-						if (timerSplash.isRunning()) {
-							timerSplash.stop();
-							timerVel.start();
-						}
+						p1.getTimer().start();
+						p2.getTimer().start();
 
 						/**
 						 * Renderizando a rua que comeca a 10% do inicio da janela e tem 80%
@@ -299,14 +267,14 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 
 						cenario.render(g);
 
-						if (!cenario.move(new Road(0, 0, getWidth(), getHeight()))) {
+						if (!cenario.move(new Road(0, 0, getWidth(), getHeight()), p1)) {
 							numberCenario = 0;
 							cenario.y = 0;
 						}
 
 //						render(g);
 						p1.render(g);
-//						p2.render(g);
+						p2.render(g);
 
 						/**
 						 * Gerando uma posicao randomica para os inimigos
@@ -326,12 +294,13 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 						for (int i = 0; i < enemies.size(); i++) {
 							Enemy enemy = enemies.get(i);
 							enemy.render(g);
-							if (enemy.move(road)) {
+							if (enemy.move(road, p1)) {
 								enemies.clear();
 								enemies = null;
 								break;
-							} else {
-								p1.isColision(enemy, sounds);
+							} else if (p1.isColision(enemy, sounds) || p2.isColision(enemy, sounds)) {
+								p1.stopVel();
+								p2.stopVel();
 							}
 						}
 
@@ -347,9 +316,17 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 							} else {
 								g.drawImage(lifeless, 50 + (lifeless.getWidth() + 15) * i, 50, null);
 							}
+
+							if (i < p2.getLife()) {
+								g.drawImage(life, getWidth() - (life.getWidth() + 15) * i, 50, null);
+							} else {
+								g.drawImage(lifeless, getWidth() - (lifeless.getWidth() + 15) * i, 50, null);
+							}
+
 						}
-						if (!p1.haveLife()) {
-							p1.gameOver(g, new Point(getWidth() / 2, getHeight() / 2));
+						if (!p1.haveLife() || !p2.haveLife()) {
+							p1.gameOver(g, new Point(0, getHeight() / 2));
+							p2.gameOver(g , new Point(getWidth() * 3/4, getHeight() / 2));
 						}
 					}
 
@@ -374,7 +351,21 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		timer.start();
 	}
 
+	private Timer timerVel(Player p) {
+		return new Timer(3000, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (p.haveLife()) {
+					p.setVel(1);
+				} else {
+					sounds.stopSoundTrack();
+				}
+			}
+		});
+	}
+
 	/**
+	 * Colocando uma Thread para dormir por l segundo
 	 *
 	 * @param l
 	 */
@@ -385,49 +376,11 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		}
 	}
 
-	@Override
-	public void keyTyped(KeyEvent e) {
-	}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		if (p1.haveLife()) {
-			switch (e.getKeyCode()) {
-				case (KeyEvent.VK_RIGHT):
-					if (road.contains(p1.x + Player.getVel(), p1.y, p1.width, p1.height)) {
-						p1.moveRight();
-					} else {
-						p1.x = road.x + road.width - p1.width;
-					}
-					break;
-				case (KeyEvent.VK_LEFT):
-					if (road.contains(p1.x - Player.getVel(), p1.y, p1.width, p1.height)) {
-						p1.moveLeft();
-					} else {
-						p1.x = road.x;
-					}
-					break;
-				case (KeyEvent.VK_ENTER):
-					if (splash) {
-						splash = false;
-					}
-					break;
-				case (KeyEvent.VK_UP):
-					Element.setVel(5);
-					break;
-			}
-		}
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		p1.changeDirection(Player.Direction.FOWARD);
-	}
-
 	/**
+	 * Pega uma imagem a partir de um caminho
 	 *
-	 * @param file
-	 * @return
+	 * @param file caminho do arquivo
+	 * @return um buffer de imagem para plotar no jogo
 	 */
 	public static BufferedImage getImg(String file) {
 		BufferedImage buffer;
@@ -449,20 +402,24 @@ public class JogoCorrida extends JFrame implements Runnable, KeyListener {
 		return buffer;
 	}
 
-	private void render(Graphics g) {
-		fr.calculate();
-		g.setColor(Color.red);
-		g.drawString(fr.getFrameRate(), 300, 20);
-		g.setColor(Color.YELLOW);
-		g.drawString("janela:" + toString(), 500, 180);
-		g.drawString("carro_pos:" + p1.getLocation().toString(), 500, 200);
-		g.drawString("carro_tam:" + p1.getSize().toString(), 500, 220);
-		g.drawString("carro_vel:" + Player.getVel(), 500, 240);
-		g.drawString("crossover_vel:" + Element.getVel() + "/" + Crossover.MAX_VEL, 500, 260);
-	}
-
 	/**
+	 * Renderizam para debug
 	 *
+	 * @param g
+	 */
+//	private void render(Graphics g) {
+//		fr.calculate();
+//		g.setColor(Color.red);
+//		g.drawString(fr.getFrameRate(), 300, 20);
+//		g.setColor(Color.YELLOW);
+//		g.drawString("janela:" + toString(), 500, 180);
+//		g.drawString("carro_pos:" + p1.getLocation().toString(), 500, 200);
+//		g.drawString("carro_tam:" + p1.getSize().toString(), 500, 220);
+//		g.drawString("carro_vel:" + Player.getVel(), 500, 240);
+//		g.drawString("crossover_vel:" + Element.getVel() + "/" + Crossover.MAX_VEL, 500, 260);
+//	}
+	/**
+	 * Fechando a Thread do jogo
 	 */
 	protected void onWindowClosing() {
 		try {

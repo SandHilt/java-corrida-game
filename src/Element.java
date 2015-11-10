@@ -4,14 +4,14 @@ import java.awt.*;
 /**
  * Classe abstrata para tratar todos os elementos da tela
  */
-public abstract class Element extends Rectangle  {
+public abstract class Element extends Rectangle {
 
-	private static int vel = 0;
 
 	/**
-	 *
+	 * Cor do elemento
+	 * Apesar de algumas elementos terem imagens
+	 * todos tem este campo por padrao
 	 */
-	public static final int MAX_VEL = 100;
 	private Color color;
 
 	/**
@@ -32,6 +32,7 @@ public abstract class Element extends Rectangle  {
 	}
 
 	/**
+	 * Elemento com retangulo e um cor especifica
 	 *
 	 * @param rectangle
 	 * @param color
@@ -42,39 +43,13 @@ public abstract class Element extends Rectangle  {
 	}
 
 	/**
+	 * Criando um elemento sem tamanho, apenas com um ponto Posteriormente vai
+	 * receber um tamanho
 	 *
 	 * @param point
 	 */
 	public Element(Point point) {
 		this(new Rectangle(point));
-	}
-
-	/**
-	 *
-	 * @return
-	 */
-	public static int getVel() {
-		return vel;
-	}
-
-	/**
-	 *
-	 * @param vel
-	 */
-	public static void setVel(int vel) {
-		int dx = Element.vel + vel;
-		if (dx <= Element.MAX_VEL && dx >= 0) {
-			Element.vel = dx;
-		}
-	}
-
-	/**
-	 *
-	 */
-	public static void stopVel() {
-		if (Element.vel != 0) {
-			Element.vel = 0;
-		}
 	}
 
 	/**
@@ -89,12 +64,13 @@ public abstract class Element extends Rectangle  {
 	 * Faz um elemento andar em relacao a Road
 	 *
 	 * @param road
+	 * @param p
 	 * @return Se o elemento nao esta mais nas coordenadas da rua
 	 */
-	public boolean move(Road road) {
+	public boolean move(Road road, Player p) {
 		Point point = getLocation();
 
-		point.translate(0 , vel);
+		point.translate(0, p.vel);
 
 		if (road.contains(point)) {
 			this.setLocation(point);

@@ -58,9 +58,9 @@ public class Enemy extends Element {
 	 * @param road
 	 * @return
 	 */
-	public boolean move(Road road) {
+	public boolean move(Road road, Player p) {
 
-		if (!super.move(road)) {
+		if (!super.move(road, p)) {
 			obstacle = true;
 			int pos_x = randomPos(road);
 			super.setLocation(pos_x, 0);

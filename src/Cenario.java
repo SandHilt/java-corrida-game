@@ -1,6 +1,7 @@
 
 import java.awt.*;
 import java.awt.image.*;
+import java.rmi.RemoteException;
 import java.util.*;
 
 /**
@@ -19,12 +20,11 @@ public class Cenario extends Element {
 	public enum Direction {
 
 		/**
-		 *
+		 * Aparece na esquerda da tela
 		 */
 		LEFT,
-
 		/**
-		 *
+		 * Aparece na direita da tela
 		 */
 		RIGHT
 	};
@@ -40,6 +40,7 @@ public class Cenario extends Element {
 	}
 
 	/**
+	 * Pega a direcao que aparece
 	 *
 	 * @return
 	 */
@@ -48,6 +49,7 @@ public class Cenario extends Element {
 	}
 
 	/**
+	 * Seta a direcao que aparece o elemento.
 	 *
 	 * @param direction
 	 */
@@ -56,7 +58,7 @@ public class Cenario extends Element {
 	}
 
 	/**
-	 *
+	 * Pega uma imagem arbitraria
 	 * @return
 	 */
 	public static Cenario nextImg() {

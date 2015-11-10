@@ -2,6 +2,7 @@
 import java.awt.*;
 import java.awt.image.*;
 import java.rmi.RemoteException;
+import javax.swing.*;
 
 /**
  * refere-se ao jogador usando o carro
@@ -9,12 +10,20 @@ import java.rmi.RemoteException;
 class Player extends Element implements IPlayer {
 
 	private BufferedImage img;
+	public int vel = 0;
+
+	/**
+	 * Velocidade maxima do carrinho
+	 */
+	public static final int MAX_VEL = 100;
 
 	/* vida do personagem */
 	private byte life;
 	public static final byte MAX_LIFE = 3;
 	private Direction direction;
 	private int imageIndex;
+	private Timer timer;
+	private boolean connected;
 
 	public enum Direction {
 		FOWARD,
@@ -24,6 +33,7 @@ class Player extends Element implements IPlayer {
 
 	public Player(Point point, int imageIndex) {
 		super(point);
+		this.connected = false;
 		try {
 			if (imageIndex < 1 || imageIndex > 2) {
 				throw new Exception("Erro no indice da imagem do Player.");
@@ -39,6 +49,54 @@ class Player extends Element implements IPlayer {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	public Timer getTimer() {
+		return timer;
+	}
+
+	public void setTimer(Timer timer) {
+		this.timer = timer;
+	}
+
+	public boolean isConnected() {
+		return connected;
+	}
+
+	public void setConnected(boolean connected) {
+		this.connected = connected;
+	}
+
+	/**
+	 * Pega a velocidade no instante
+	 *
+	 * @return
+	 */
+	@Override
+	public int getVel() {
+		return vel;
+	}
+
+	/**
+	 * Incrementa a velocidade no jogo
+	 *
+	 * @param vel
+	 */
+	@Override
+	public void setVel(int vel) {
+		int dx = this.vel + vel;
+		if (dx <= Player.MAX_VEL && dx >= 0) {
+			this.vel = dx;
+		}
+	}
+
+	/**
+	 * Para todos os elementos do jogo
+	 */
+	public void stopVel() {
+		if (vel != 0) {
+			vel = 0;
 		}
 	}
 
@@ -76,6 +134,7 @@ class Player extends Element implements IPlayer {
 		img = JogoCorrida.getImg(JogoCorrida.relativePath + "car/car_" + imageIndex + rotation + ".png");
 	}
 
+	@Override
 	public void changeDirection(Direction direction) {
 		this.direction = direction;
 		if (!direction.equals(Direction.FOWARD)) {
@@ -92,7 +151,7 @@ class Player extends Element implements IPlayer {
 	 */
 	public boolean isColision(Enemy enemy, Sound crash) {
 		if (super.intersects(enemy) && enemy.isObstacle()) {
-			Element.stopVel();
+			stopVel();
 			life--;
 			enemy.setObstacle();
 			crash.playCrash();
@@ -103,20 +162,23 @@ class Player extends Element implements IPlayer {
 	}
 
 	@Override
-	public Rectangle getBoundPlayer() {
-		return getBounds();
+	public void moveRight(Road road) {
+		if (road.contains(x + vel, y, width, height)) {
+			x += getVel() + 15;
+			changeDirection(Direction.RIGHT);
+		} else {
+			x = road.x + road.width - width;
+		}
 	}
 
 	@Override
-	public void moveRight() {
-		x += getVel() + 15;
-		changeDirection(Direction.RIGHT);
-	}
-
-	@Override
-	public void moveLeft() {
-		x -= getVel() + 15;
-		changeDirection(Direction.LEFT);
+	public void moveLeft(Road road) {
+		if (road.contains(x - vel, y, width, height)) {
+			x -= getVel() + 15;
+			changeDirection(Direction.LEFT);
+		} else {
+			x = road.x;
+		}
 	}
 
 	@Override
