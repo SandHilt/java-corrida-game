@@ -1,7 +1,7 @@
 
 import java.awt.*;
 import java.awt.image.*;
-import java.rmi.RemoteException;
+import java.rmi.*;
 import javax.swing.*;
 
 /**
@@ -60,10 +60,12 @@ class Player extends Element implements IPlayer {
 		this.timer = timer;
 	}
 
+	@Override
 	public boolean isConnected() {
 		return connected;
 	}
 
+	@Override
 	public void setConnected(boolean connected) {
 		this.connected = connected;
 	}
@@ -109,14 +111,20 @@ class Player extends Element implements IPlayer {
 		return life > 0;
 	}
 
+	public void winner(Graphics g, Point p, String s) throws RemoteException {
+		g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 60));
+		g.setColor(Color.WHITE);
+		g.drawString("Player" + s +"WINN", p.x, p.y);
+	}
+
 	/**
 	 * Renderiza o game over
 	 *
 	 * @param g
 	 * @param p
 	 */
-	public void gameOver(Graphics g, Point p) {
-		g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 72));
+	public void gameOver(Graphics g, Point p) throws RemoteException {
+		g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 60));
 		g.setColor(Color.WHITE);
 		g.drawString("GAME OVER", p.x, p.y);
 	}

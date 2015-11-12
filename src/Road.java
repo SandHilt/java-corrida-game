@@ -1,9 +1,7 @@
 
 import java.awt.*;
+import java.util.ArrayList;
 
-/**
- *
- */
 public class Road extends Element {
 
 	public Road(int x, int y, int w, int h) {
@@ -47,16 +45,20 @@ public class Road extends Element {
 		this(rectangle, new Color(51, 51, 51));
 	}
 
-	public void render(Graphics g, Player p) {
+	public void render(Graphics g, int vel) {
+		this.render(g, vel, Crossover.crossovers);
+	}
+
+	public void render(Graphics g, int vel, ArrayList<Crossover> crossovers) {
 		g.fillRect(x, y, width, height);
 
 		/**
 		 * Renderizando cada faixa, que faz parte da rua
 		 */
-		for (Crossover crossover : Crossover.crossovers) {
+		for (Crossover crossover : crossovers) {
 			crossover.x = x + (width / 2);
 
-			if (!crossover.move(this, p)) {
+			if (!crossover.move(this, vel)) {
 				crossover.y = 0;
 			}
 
@@ -69,5 +71,11 @@ public class Road extends Element {
 	 * @param g
 	 */
 	@Override
-	public void render(Graphics g) {	}
+	public void render(Graphics g) {
+		try {
+			throw new Exception("Metodo nao implementado, utilize o outro");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

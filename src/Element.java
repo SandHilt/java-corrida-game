@@ -64,13 +64,13 @@ public abstract class Element extends Rectangle {
 	 * Faz um elemento andar em relacao a Road
 	 *
 	 * @param road
-	 * @param p
+	 * @param vel
 	 * @return Se o elemento nao esta mais nas coordenadas da rua
 	 */
-	public boolean move(Road road, Player p) {
+	public boolean move(Road road, int vel) {
 		Point point = getLocation();
 
-		point.translate(0, p.vel);
+		point.translate(0, vel);
 
 		if (road.contains(point)) {
 			this.setLocation(point);

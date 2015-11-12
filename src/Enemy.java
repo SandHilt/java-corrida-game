@@ -58,9 +58,9 @@ public class Enemy extends Element {
 	 * @param road
 	 * @return
 	 */
-	public boolean move(Road road, Player p) {
+	public boolean move(Road road, int vel) {
 
-		if (!super.move(road, p)) {
+		if (!super.move(road, vel)) {
 			obstacle = true;
 			int pos_x = randomPos(road);
 			super.setLocation(pos_x, 0);
@@ -68,27 +68,6 @@ public class Enemy extends Element {
 		}
 		return false;
 	}
-
-	/**
-	 * Responsavel por mover o inimigo
-	 *
-	 * @param road Passando a rua como paramero
-	 */
-//	public void move(Road road) {
-//		int sizeRoadY = road.height;
-//
-//		int delta = Crossover.getDelta();
-//		super.translate(0, delta);
-//
-//		/**
-//		 * Caso o inimigo tenha saido da tela ele vai reaparecer em uma nova posicao
-//		 */
-//		if (y + height > sizeRoadY) {
-//			obstacle = true;
-//			int pos_x = randomPos(road);
-//			super.setLocation(pos_x, 0);
-//		}
-//	}
 	/**
 	 *
 	 * @param g

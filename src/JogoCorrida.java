@@ -18,22 +18,26 @@ import java.util.Random;
 import java.util.HashMap;
 
 /**
- *
- * @author Bruno O
+ * Classe principal
  */
 public class JogoCorrida extends JFrame implements Runnable, IJogo {
 
-	private FrameRate fr;
+//	private FrameRate fr;
 	private BufferStrategy bs;
 	private volatile boolean running;
 	private Thread gameThread;
-
-	private Road road;
+	private volatile Road road;
+	private int connectedPlayers;
 	private Player p1;
 	private Player p2;
 	private ArrayList<Enemy> enemies;
 	private int numberCenario;
-	private Cenario cenario;
+	private volatile Cenario cenario;
+
+	/**
+	 * Define se esta pronto se os dois jogadores estao prontos para comecar
+	 */
+	private volatile boolean ready;
 
 	private static Map<String, BufferedImage> bufferImages;
 
@@ -48,6 +52,16 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 	private Canvas canvas;
 
 	@Override
+	public boolean isReady() throws RemoteException {
+		return ready;
+	}
+
+	@Override
+	public int getIDPlayer() throws RemoteException {
+		return ++connectedPlayers;
+	}
+
+	@Override
 	public Cenario getCenario() throws RemoteException {
 		return cenario;
 	}
@@ -55,6 +69,21 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 	@Override
 	public ArrayList<Enemy> getEnemies() throws RemoteException {
 		return enemies;
+	}
+
+	@Override
+	public Road getRoad() throws RemoteException {
+		return road;
+	}
+
+	@Override
+	public Color corTempo() {
+		return canvas.getBackground();
+	}
+
+	@Override
+	public ArrayList<Crossover> getCrossovers() throws RemoteException {
+		return Crossover.crossovers;
 	}
 
 	/**
@@ -103,8 +132,6 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 	/**
 	 * Classe principal do jogo
 	 *
-	 * @param p1
-	 * @param p2
 	 */
 	public JogoCorrida() {
 		numberCenario = 0;
@@ -169,7 +196,7 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 			}
 
 		} catch (RemoteException e) {
-			System.err.println("Nao consigo exportar o objeto Player1");
+			System.err.println("Nao consigo exportar o objeto Player ou Cenario");
 		}
 
 		System.out.println("Servidor RMI pronto");
@@ -202,7 +229,11 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 	public void createAndShowGui() {
 		canvas = new Canvas();
 		canvas.setSize(800, 600);
-		canvas.setBackground(Tempo.FLORESTA.cor);
+
+		Random r = new Random();
+		Tempo[] tempo = Tempo.values();
+
+		canvas.setBackground(tempo[r.nextInt(tempo.length)].cor);
 		canvas.setIgnoreRepaint(true);
 		getContentPane().add(canvas);
 		setTitle("The Need Velocity Run");
@@ -225,8 +256,6 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 	public void run() {
 		running = true;
 
-//		sounds.playSoundTrackLoop();
-
 		while (running) {
 			gameLoop();
 			sleep(15);
@@ -244,7 +273,9 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 					g = bs.getDrawGraphics();
 					g.clearRect(0, 0, getWidth(), getHeight());
 
-					if (!p1.isConnected() && !p2.isConnected()) {
+					ready = p1.isConnected() && p2.isConnected();
+
+					if (!ready) {
 						g.drawImage(getImg(relativePath + "splash.jpg"), 0, 0, null);
 					} else {
 						p1.getTimer().start();
@@ -258,7 +289,7 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 							road = new Road(new Rectangle((int) (getWidth() * .1), 0, (int) (getWidth() * .8), getHeight()));
 						}
 
-						road.render(g);
+						road.render(g, p1.getVel());
 
 						if (numberCenario++ < 1) {
 							Cenario.loadImg(road, getWidth());
@@ -267,7 +298,7 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 
 						cenario.render(g);
 
-						if (!cenario.move(new Road(0, 0, getWidth(), getHeight()), p1)) {
+						if (!cenario.move(new Road(0, 0, getWidth(), getHeight()), p1.getVel())) {
 							numberCenario = 0;
 							cenario.y = 0;
 						}
@@ -294,7 +325,7 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 						for (int i = 0; i < enemies.size(); i++) {
 							Enemy enemy = enemies.get(i);
 							enemy.render(g);
-							if (enemy.move(road, p1)) {
+							if (enemy.move(road, p1.vel)) {
 								enemies.clear();
 								enemies = null;
 								break;
@@ -318,15 +349,28 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 							}
 
 							if (i < p2.getLife()) {
-								g.drawImage(life, getWidth() - (life.getWidth() + 15) * i, 50, null);
+								g.drawImage(life, getWidth() / 2 + (life.getWidth() + 15) * i, 50, null);
 							} else {
-								g.drawImage(lifeless, getWidth() - (lifeless.getWidth() + 15) * i, 50, null);
+								g.drawImage(lifeless, getWidth() / 2 + (lifeless.getWidth() + 15) * i, 50, null);
 							}
 
 						}
 						if (!p1.haveLife() || !p2.haveLife()) {
-							p1.gameOver(g, new Point(0, getHeight() / 2));
-							p2.gameOver(g , new Point(getWidth() * 3/4, getHeight() / 2));
+							try {
+								if (p1.haveLife()) {
+									p1.winner(g, new Point(0, getHeight() / 2), "1");
+									p2.gameOver(g, new Point(getWidth() / 2, getHeight() / 2));
+								} else if (p2.haveLife()) {
+									p1.gameOver(g, new Point(0, getHeight() / 2));
+									p2.winner(g, new Point(getWidth() / 2, getHeight() / 2), "2");
+								}
+
+							} catch (RemoteException e) {
+								e.printStackTrace();
+							}
+
+							p1.getTimer().stop();
+							p2.getTimer().stop();
 						}
 					}
 

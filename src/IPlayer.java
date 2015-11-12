@@ -26,6 +26,8 @@ interface IPlayer extends Remote {
 
 	public void render(Graphics g) throws RemoteException;
 
+	public void winner(Graphics g, Point p, String s) throws RemoteException;
+
 	public void gameOver(Graphics g, Point p) throws RemoteException;
 
 }

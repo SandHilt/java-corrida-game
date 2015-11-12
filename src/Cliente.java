@@ -8,6 +8,8 @@ import java.rmi.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -15,6 +17,7 @@ class Cliente extends JFrame implements Runnable, KeyListener {
 
 	private IPlayer player;
 	private IJogo cena;
+
 	private static Map<String, BufferedImage> bufferImages;
 	private BufferStrategy bs;
 	private volatile boolean running;
@@ -23,13 +26,15 @@ class Cliente extends JFrame implements Runnable, KeyListener {
 	private Road road;
 	private boolean splash;
 	private boolean splashPressEnter;
-	private final String[] imageEnemies;
-	private final Sound sounds;
-	private final Timer timerSplash;
-	private static int timerSplashDelay = 1000;
-	private static int timerSplashFlick = 300;
+	private String[] imageEnemies;
+	private Sound sounds;
+	private Timer timerSplash;
+	private static final int TIMER_SPLASH_DELAY = 1000;
+	private static final int TIMER_SPLASH_FLICK = 300;
+	private int id;
 	private ArrayList<Enemy> enemies;
-	private static int vel;
+	private boolean ready;
+	private Cenario cenario;
 
 	public static String relativePath = "./src/";
 
@@ -49,23 +54,38 @@ class Cliente extends JFrame implements Runnable, KeyListener {
 	}
 
 	public Cliente() {
-		try {
-			player = (IPlayer) Naming.lookup("Player1");
-		} catch (RemoteException e) {
-			System.out.println("Nao consigo achar o jogador dentro do registro");
-			try {
-				player = (IPlayer) Naming.lookup("Player2");
-			} catch (NotBoundException | MalformedURLException | RemoteException ex) {
-				System.out.println("Desculpe, esta lotado. Tente novamente mais tarde.");
-			}
-		} catch (Exception e) {
-			System.out.println("Nao consigo achar o jogador dentro do registro");
-		}
+		ready = false;
+		id = 0;
 
 		try {
 			cena = (IJogo) Naming.lookup("Cenario");
 		} catch (NotBoundException | MalformedURLException | RemoteException ex) {
 			System.out.println("Nao consegui achar o cenario");
+		}
+
+		try {
+			id = cena.getIDPlayer();
+		} catch (RemoteException ex) {
+			System.err.println("Nao consegui saber quantos jogadores estao conectados.");
+		}
+
+		try {
+			switch (id) {
+				case 1:
+					player = (IPlayer) Naming.lookup("Player1");
+					break;
+				case 2:
+					player = (IPlayer) Naming.lookup("Player2");
+					break;
+				default:
+					throw new Exception("Server lotado.");
+			}
+		} catch (RemoteException e) {
+			System.out.println("Nao consigo achar o jogador dentro do registro");
+		} catch (NotBoundException | MalformedURLException ex) {
+			System.out.println("Desculpe, esta lotado. Tente novamente mais tarde.");
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 
 		/**
@@ -78,6 +98,8 @@ class Cliente extends JFrame implements Runnable, KeyListener {
 		 * Iniciando a rua
 		 */
 		road = null;
+
+		cenario = null;
 
 		/**
 		 * Habilitando a Splash Screen
@@ -99,7 +121,7 @@ class Cliente extends JFrame implements Runnable, KeyListener {
 		/**
 		 * Temporizador para a splash apagar o Press Enter
 		 */
-		timerSplash = new Timer(timerSplashDelay, new ActionListener() {
+		timerSplash = new Timer(TIMER_SPLASH_DELAY, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				splashPressEnter = false;
@@ -116,7 +138,11 @@ class Cliente extends JFrame implements Runnable, KeyListener {
 	public void createAndShowGui() {
 		Canvas canvas = new Canvas();
 		canvas.setSize(800, 600);
-		canvas.setBackground(JogoCorrida.Tempo.FLORESTA.cor);
+		try {
+			canvas.setBackground(cena.corTempo());
+		} catch (RemoteException ex) {
+			System.err.println("Nao consegui pegar a cor do cenario");
+		}
 		canvas.setIgnoreRepaint(true);
 		getContentPane().add(canvas);
 		setTitle("The Need Velocity Run");
@@ -139,8 +165,7 @@ class Cliente extends JFrame implements Runnable, KeyListener {
 		running = true;
 //		fr.init();
 
-		sounds.playSoundTrackLoop();
-
+//		sounds.playSoundTrackLoop();
 		while (running) {
 			gameLoop();
 			sleep(15);
@@ -158,7 +183,13 @@ class Cliente extends JFrame implements Runnable, KeyListener {
 					g = bs.getDrawGraphics();
 					g.clearRect(0, 0, getWidth(), getHeight());
 
-					if (splash) {
+					try {
+						ready = cena.isReady();
+					} catch (RemoteException ex) {
+						System.out.println("Nao consegui saber o estado do players");
+					}
+
+					if (splash || !ready) {
 
 						g.drawImage(getImg(relativePath + "splash.jpg"), 0, 0, null);
 
@@ -171,7 +202,7 @@ class Cliente extends JFrame implements Runnable, KeyListener {
 							/**
 							 * Adicionando um temporizador para piscar o Press Enter
 							 */
-							timer(timerSplashDelay + timerSplashFlick, new ActionListener() {
+							timer(TIMER_SPLASH_DELAY + TIMER_SPLASH_FLICK, new ActionListener() {
 								@Override
 								public void actionPerformed(ActionEvent e) {
 									splashPressEnter = true;
@@ -188,31 +219,46 @@ class Cliente extends JFrame implements Runnable, KeyListener {
 							timerSplash.stop();
 						}
 
-						/**
-						 * Renderizando a rua que comeca a 10% do inicio da janela e tem 80%
-						 * de tamanho em relacao a janela
-						 */
-						if (road == null) {
-							road = new Road(new Rectangle((int) (getWidth() * .1), 0, (int) (getWidth() * .8), getHeight()));
+						try {
+							road = cena.getRoad();
+						} catch (RemoteException ex) {
+							System.err.println("Nao consegui pegar a rua do server.");
 						}
 
-						road.render(g);
+						if (road != null) {
+							try {
+								road.render(g, player.getVel(), cena.getCrossovers());
+							} catch (RemoteException ex) {
+								System.out.println("Nao consegui renderizar a rua.");
+							}
+						}
 
 						try {
-							cena.getCenario().render(g);
+							cenario = cena.getCenario();
 						} catch (RemoteException ex) {
-							System.out.println("Nao consegui renderizar o cenario");
+						}
+
+						if (cenario != null) {
+							cenario.render(g);
 						}
 
 						try {
 							player.render(g);
 						} catch (RemoteException ex) {
-							System.out.println("Nao consegui renderizar o player");
 						}
 
-						for (int i = 0; i < enemies.size(); i++) {
-							Enemy e = enemies.get(i);
-							e.render(g);
+						if (enemies == null) {
+							try {
+								enemies = cena.getEnemies();
+							} catch (RemoteException ex) {
+							}
+						} else {
+							for (int i = 0; i < enemies.size(); i++) {
+								Enemy e = enemies.get(i);
+								if (e != null) {
+									e.render(g);
+								}
+							}
 						}
 
 						try {
@@ -231,6 +277,7 @@ class Cliente extends JFrame implements Runnable, KeyListener {
 							}
 							if (!player.haveLife()) {
 								player.gameOver(g, new Point(getWidth() / 2, getHeight() / 2));
+								sounds.stopSoundTrack();
 							}
 						} catch (Exception e) {
 
