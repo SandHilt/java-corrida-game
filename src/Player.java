@@ -114,7 +114,7 @@ class Player extends Element implements IPlayer {
 	public void winner(Graphics g, Point p, String s) throws RemoteException {
 		g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 60));
 		g.setColor(Color.WHITE);
-		g.drawString("Player" + s +"WINN", p.x, p.y);
+		g.drawString("Player" + s +"WIN", p.x, p.y);
 	}
 
 	/**

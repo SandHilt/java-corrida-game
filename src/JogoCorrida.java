@@ -148,6 +148,8 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 		 */
 		road = null;
 
+		cenario = null;
+
 		/**
 		 * Instanciando o jogador
 		 */
@@ -291,15 +293,17 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 
 						road.render(g, p1.getVel());
 
-						if (numberCenario++ < 1) {
+						if (cenario == null) {
 							Cenario.loadImg(road, getWidth());
 							cenario = Cenario.nextImg();
 						}
 
 						cenario.render(g);
 
+						/**
+						 * Se o cenario sair da tela
+						 */
 						if (!cenario.move(new Road(0, 0, getWidth(), getHeight()), p1.getVel())) {
-							numberCenario = 0;
 							cenario.y = 0;
 						}
 
