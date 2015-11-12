@@ -24,7 +24,7 @@ public class Enemy extends Element {
 	}
 
 	/**
-	 *
+	 * Transforma o inimigo em um objeto que pode ser passado sem perder vida
 	 */
 	public void setObstacle() {
 		obstacle = false;

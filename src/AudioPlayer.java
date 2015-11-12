@@ -95,14 +95,14 @@ public class AudioPlayer implements LineListener {
 	}
 
 	/**
-	 *
+	 * Pause music
 	 */
 	public void pause() {
 		isPaused = true;
 	}
 
 	/**
-	 *
+	 * Back to the music
 	 */
 	public void resume() {
 		isPaused = false;

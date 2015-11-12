@@ -1,8 +1,7 @@
 
 
 /**
- *
- * @author Bruno O
+ * Classe para teste de fps
  */
 public class FrameRate {
 
@@ -12,7 +11,7 @@ public class FrameRate {
 	private int frameCount;
 
     /**
-     *
+     * Construtor inicial para o FPS
      */
     public void init() {
 		lastTime = System.currentTimeMillis();
@@ -28,7 +27,7 @@ public class FrameRate {
 	}
 
     /**
-     *
+     * Calculando o fps
      */
     public void calculate() {
 		long current = System.currentTimeMillis();

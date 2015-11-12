@@ -8,8 +8,6 @@ import java.rmi.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -165,7 +163,7 @@ class Cliente extends JFrame implements Runnable, KeyListener {
 		running = true;
 //		fr.init();
 
-//		sounds.playSoundTrackLoop();
+		sounds.playSoundTrackLoop();
 		while (running) {
 			gameLoop();
 			sleep(15);
@@ -247,19 +245,22 @@ class Cliente extends JFrame implements Runnable, KeyListener {
 						} catch (RemoteException ex) {
 						}
 
-						if (enemies == null) {
-							try {
-								enemies = cena.getEnemies();
-							} catch (RemoteException ex) {
-							}
-						} else {
-							for (int i = 0; i < enemies.size(); i++) {
-								Enemy e = enemies.get(i);
-								if (e != null) {
-									e.render(g);
-								}
-							}
-						}
+						/**
+						 * Tentativa de imprimir os inimigos na tela
+						 */
+//						if (enemies == null) {
+//							try {
+//								enemies = cena.getEnemies();
+//							} catch (RemoteException ex) {
+//							}
+//						} else {
+//							for (int i = 0; i < enemies.size(); i++) {
+//								Enemy e = enemies.get(i);
+//								if (e != null) {
+//									e.render(g);
+//								}
+//							}
+//						}
 
 						try {
 							/**
@@ -280,7 +281,7 @@ class Cliente extends JFrame implements Runnable, KeyListener {
 								sounds.stopSoundTrack();
 							}
 						} catch (Exception e) {
-
+							e.printStackTrace();
 						}
 					}
 

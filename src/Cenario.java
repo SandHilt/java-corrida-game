@@ -1,12 +1,11 @@
 
 import java.awt.*;
 import java.awt.image.*;
-import java.rmi.RemoteException;
 import java.util.*;
 
 /**
+ * Classe para mostrar elemento de cenario na tela
  *
- * @author Bruno O
  */
 public class Cenario extends Element {
 
@@ -15,7 +14,7 @@ public class Cenario extends Element {
 	private Direction direction;
 
 	/**
-	 *
+	 * Enumeravel para direcao que vai aparecer o elemento
 	 */
 	public enum Direction {
 
@@ -59,6 +58,7 @@ public class Cenario extends Element {
 
 	/**
 	 * Pega uma imagem arbitraria
+	 *
 	 * @return
 	 */
 	public static Cenario nextImg() {
@@ -76,6 +76,8 @@ public class Cenario extends Element {
 	}
 
 	/**
+	 * Carregando em uma lista estatica todas as imagens de cenario
+	 * Colocando uma posica e direcao em cada elemento
 	 *
 	 * @param road
 	 * @param window
@@ -118,7 +120,7 @@ public class Cenario extends Element {
 	}
 
 	/**
-	 *
+	 * Redenrizando o cenario acima da tela
 	 * @param g
 	 */
 	@Override

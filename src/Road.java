@@ -2,8 +2,19 @@
 import java.awt.*;
 import java.util.ArrayList;
 
+/**
+ *
+ * @author Bruno O
+ */
 public class Road extends Element {
 
+	/**
+	 *
+	 * @param x
+	 * @param y
+	 * @param w
+	 * @param h
+	 */
 	public Road(int x, int y, int w, int h) {
 		super(new Rectangle(x, y, w, h));
 	}
@@ -45,10 +56,21 @@ public class Road extends Element {
 		this(rectangle, new Color(51, 51, 51));
 	}
 
+	/**
+	 *
+	 * @param g
+	 * @param vel
+	 */
 	public void render(Graphics g, int vel) {
 		this.render(g, vel, Crossover.crossovers);
 	}
 
+	/**
+	 *
+	 * @param g
+	 * @param vel
+	 * @param crossovers
+	 */
 	public void render(Graphics g, int vel, ArrayList<Crossover> crossovers) {
 		g.fillRect(x, y, width, height);
 

@@ -15,7 +15,7 @@ public abstract class Element extends Rectangle {
 	private Color color;
 
 	/**
-	 *
+	 * Construtor basico para um elemento
 	 */
 	public Element() {
 		super();

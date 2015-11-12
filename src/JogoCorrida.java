@@ -51,36 +51,70 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 	 */
 	private Canvas canvas;
 
+	/**
+	 *
+	 * @return
+	 * @throws RemoteException
+	 */
 	@Override
 	public boolean isReady() throws RemoteException {
 		return ready;
 	}
 
+	/**
+	 *
+	 * @return
+	 * @throws RemoteException
+	 */
 	@Override
 	public int getIDPlayer() throws RemoteException {
 		return ++connectedPlayers;
 	}
 
+	/**
+	 *
+	 * @return
+	 * @throws RemoteException
+	 */
 	@Override
 	public Cenario getCenario() throws RemoteException {
 		return cenario;
 	}
 
+	/**
+	 *
+	 * @return
+	 * @throws RemoteException
+	 */
 	@Override
 	public ArrayList<Enemy> getEnemies() throws RemoteException {
 		return enemies;
 	}
 
+	/**
+	 *
+	 * @return
+	 * @throws RemoteException
+	 */
 	@Override
 	public Road getRoad() throws RemoteException {
 		return road;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	@Override
 	public Color corTempo() {
 		return canvas.getBackground();
 	}
 
+	/**
+	 *
+	 * @return
+	 * @throws RemoteException
+	 */
 	@Override
 	public ArrayList<Crossover> getCrossovers() throws RemoteException {
 		return Crossover.crossovers;
@@ -305,6 +339,7 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 						 */
 						if (!cenario.move(new Road(0, 0, getWidth(), getHeight()), p1.getVel())) {
 							cenario.y = 0;
+							cenario = null;
 						}
 
 //						render(g);
