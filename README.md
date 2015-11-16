@@ -1,8 +1,8 @@
 ### Todo List
 
-- [ ] RMI
-- [ ] Cenário
-- [ ] Som
+- [x] RMI
+- [x] Cenário
+- [x] Som
 
 ### Bibliografia
 - [https://www.youtube.com/watch?v=7fhbpCD12io] Audio MP3

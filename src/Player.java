@@ -20,6 +20,7 @@ class Player extends Element implements IPlayer {
 	/* vida do personagem */
 	private byte life;
 	public static final byte MAX_LIFE = 3;
+
 	private Direction direction;
 	private int imageIndex;
 	private Timer timer;
@@ -102,6 +103,7 @@ class Player extends Element implements IPlayer {
 		}
 	}
 
+	@Override
 	public byte getLife() {
 		return life;
 	}
@@ -114,7 +116,7 @@ class Player extends Element implements IPlayer {
 	public void winner(Graphics g, Point p, String s) throws RemoteException {
 		g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 60));
 		g.setColor(Color.WHITE);
-		g.drawString("Player" + s +"WIN", p.x, p.y);
+		g.drawString("Player" + s + "WIN", p.x, p.y);
 	}
 
 	/**
@@ -139,7 +141,7 @@ class Player extends Element implements IPlayer {
 		if (!"".equals(rotation)) {
 			rotation = "_" + rotation;
 		}
-		img = JogoCorrida.getImg(JogoCorrida.relativePath + "car/car_" + imageIndex + rotation + ".png");
+		img = JogoCorrida.getImg(JogoCorrida.RELATIVE_PATH + "car/car_" + imageIndex + rotation + ".png");
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.awt.event.*;
 import java.awt.image.*;
 import java.io.*;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.rmi.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ class Cliente extends JFrame implements Runnable, KeyListener {
 	private boolean ready;
 	private Cenario cenario;
 
-	public static String relativePath = "./src/";
+	public final static String RELATIVE_PATH = "./";
 
 	public static void main(String[] args) {
 		final Cliente cliente = new Cliente();
@@ -110,11 +111,11 @@ class Cliente extends JFrame implements Runnable, KeyListener {
 		/**
 		 * Array com localizacao dos inimigos
 		 */
-		imageEnemies = new String[]{JogoCorrida.relativePath + "tree_obst.png", JogoCorrida.relativePath + "stone_obst.png"};
+		imageEnemies = new String[]{JogoCorrida.RELATIVE_PATH + "tree_obst.png", JogoCorrida.RELATIVE_PATH + "stone_obst.png"};
 		/**
 		 * Criando os arquivos de sons e preparando para rodar.
 		 */
-		sounds = new Sound(JogoCorrida.relativePath + "sound/miami.mp3", JogoCorrida.relativePath + "sound/crash.wav");
+		sounds = new Sound(JogoCorrida.RELATIVE_PATH + "sound/miami.mp3", JogoCorrida.RELATIVE_PATH + "sound/crash.wav");
 
 		/**
 		 * Temporizador para a splash apagar o Press Enter
@@ -189,7 +190,7 @@ class Cliente extends JFrame implements Runnable, KeyListener {
 
 					if (splash || !ready) {
 
-						g.drawImage(getImg(relativePath + "splash.jpg"), 0, 0, null);
+						g.drawImage(getImg(RELATIVE_PATH + "splash.jpg"), 0, 0, null);
 
 						g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 72));
 						g.setColor(Color.WHITE);
@@ -218,33 +219,39 @@ class Cliente extends JFrame implements Runnable, KeyListener {
 						}
 
 						try {
-							road = cena.getRoad();
-						} catch (RemoteException ex) {
-							System.err.println("Nao consegui pegar a rua do server.");
-						}
-
-						if (road != null) {
-							try {
-								road.render(g, player.getVel(), cena.getCrossovers());
-							} catch (RemoteException ex) {
-								System.out.println("Nao consegui renderizar a rua.");
+							if (road == null) {
+								road = cena.getRoad();
 							}
+						} catch (RemoteException e) {
+							e.printStackTrace();
 						}
-
-						try {
-							cenario = cena.getCenario();
-						} catch (RemoteException ex) {
-						}
-
-						if (cenario != null) {
-							cenario.render(g);
-						}
-
-						try {
-							player.render(g);
-						} catch (RemoteException ex) {
-						}
-
+//						try {
+//							road = cena.getRoad();
+//						} catch (RemoteException ex) {
+//							System.err.println("Nao consegui pegar a rua do server.");
+//						}
+//
+//						if (road != null) {
+//							try {
+//								road.render(g, player.getVel(), cena.getCrossovers());
+//							} catch (RemoteException ex) {
+//								System.out.println("Nao consegui renderizar a rua.");
+//							}
+//						}
+//
+//						try {
+//							cenario = cena.getCenario();
+//						} catch (RemoteException ex) {
+//						}
+//
+//						if (cenario != null) {
+//							cenario.render(g);
+//						}
+//
+//						try {
+//							player.render(g);
+//						} catch (RemoteException ex) {
+//						}
 						/**
 						 * Tentativa de imprimir os inimigos na tela
 						 */
@@ -261,14 +268,13 @@ class Cliente extends JFrame implements Runnable, KeyListener {
 //								}
 //							}
 //						}
-
 						try {
 							/**
 							 * Renderizando a vida
 							 */
 							for (int i = 0; i < Player.MAX_LIFE; i++) {
-								BufferedImage life = getImg(relativePath + "life.png");
-								BufferedImage lifeless = getImg(relativePath + "lifeless.png");
+								BufferedImage life = getImg(RELATIVE_PATH + "life.png");
+								BufferedImage lifeless = getImg(RELATIVE_PATH + "lifeless.png");
 
 								if (i < player.getLife()) {
 									g.drawImage(life, 50 + (life.getWidth() + 15) * i, 50, null);

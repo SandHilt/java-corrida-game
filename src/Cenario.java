@@ -89,7 +89,7 @@ public class Cenario extends Element {
 			Direction nextDirection = Direction.LEFT;
 
 			for (int i = 0; i < 16; i++) {
-				BufferedImage img = JogoCorrida.getImg(JogoCorrida.relativePath + "sprites/" + i + ".png");
+				BufferedImage img = JogoCorrida.getImg(JogoCorrida.RELATIVE_PATH + "sprites/" + i + ".png");
 
 				Random r = new Random(System.currentTimeMillis());
 

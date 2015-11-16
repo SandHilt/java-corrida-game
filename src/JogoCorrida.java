@@ -44,7 +44,7 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 	/**
 	 * Pasta relativa para pegar os recursos
 	 */
-	public static String relativePath = "./src/";
+	public static String RELATIVE_PATH = "./";
 
 	/**
 	 * Pegando o canvas para pinta-lo posteriormente
@@ -53,8 +53,7 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 
 	/**
 	 *
-	 * @return
-	 * @throws RemoteException
+	 * @return @throws RemoteException
 	 */
 	@Override
 	public boolean isReady() throws RemoteException {
@@ -63,8 +62,7 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 
 	/**
 	 *
-	 * @return
-	 * @throws RemoteException
+	 * @return @throws RemoteException
 	 */
 	@Override
 	public int getIDPlayer() throws RemoteException {
@@ -73,8 +71,7 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 
 	/**
 	 *
-	 * @return
-	 * @throws RemoteException
+	 * @return @throws RemoteException
 	 */
 	@Override
 	public Cenario getCenario() throws RemoteException {
@@ -83,8 +80,7 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 
 	/**
 	 *
-	 * @return
-	 * @throws RemoteException
+	 * @return @throws RemoteException
 	 */
 	@Override
 	public ArrayList<Enemy> getEnemies() throws RemoteException {
@@ -93,8 +89,7 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 
 	/**
 	 *
-	 * @return
-	 * @throws RemoteException
+	 * @return @throws RemoteException
 	 */
 	@Override
 	public Road getRoad() throws RemoteException {
@@ -112,8 +107,7 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 
 	/**
 	 *
-	 * @return
-	 * @throws RemoteException
+	 * @return @throws RemoteException
 	 */
 	@Override
 	public ArrayList<Crossover> getCrossovers() throws RemoteException {
@@ -193,11 +187,11 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 		/**
 		 * Array com localizacao da imagem dos inimigos
 		 */
-		imageEnemies = new String[]{JogoCorrida.relativePath + "tree_obst.png", JogoCorrida.relativePath + "stone_obst.png"};
+		imageEnemies = new String[]{JogoCorrida.RELATIVE_PATH + "tree_obst.png", JogoCorrida.RELATIVE_PATH + "stone_obst.png"};
 		/**
 		 * Criando os arquivos de sons e preparando para rodar.
 		 */
-		sounds = new Sound(JogoCorrida.relativePath + "sound/miami.mp3", JogoCorrida.relativePath + "sound/crash.wav");
+		sounds = new Sound(JogoCorrida.RELATIVE_PATH + "sound/miami.mp3", JogoCorrida.RELATIVE_PATH + "sound/crash.wav");
 
 		/**
 		 * Temporazidor para velocidade
@@ -312,7 +306,7 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 					ready = p1.isConnected() && p2.isConnected();
 
 					if (!ready) {
-						g.drawImage(getImg(relativePath + "splash.jpg"), 0, 0, null);
+						g.drawImage(getImg(RELATIVE_PATH + "splash.jpg"), 0, 0, null);
 					} else {
 						p1.getTimer().start();
 						p2.getTimer().start();
@@ -378,8 +372,8 @@ public class JogoCorrida extends JFrame implements Runnable, IJogo {
 						 * Renderizando a vida
 						 */
 						for (int i = 0; i < Player.MAX_LIFE; i++) {
-							BufferedImage life = getImg(relativePath + "life.png");
-							BufferedImage lifeless = getImg(relativePath + "lifeless.png");
+							BufferedImage life = getImg(RELATIVE_PATH + "life.png");
+							BufferedImage lifeless = getImg(RELATIVE_PATH + "lifeless.png");
 
 							if (i < p1.getLife()) {
 								g.drawImage(life, 50 + (life.getWidth() + 15) * i, 50, null);
